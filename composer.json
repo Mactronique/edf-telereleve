@@ -22,6 +22,7 @@
         "symfony/console": "^2.8",
         "symfony/config": "^2.8",
         "symfony/yaml": "^2.8",
-        "psr/log": "^1.0"
+        "psr/log": "^1.0",
+        "symfony/var-dumper": "^3.0"
     }
 }
