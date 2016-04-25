@@ -1,0 +1,27 @@
+{
+    "name": "matronique/edf-telereleve",
+    "type": "library",
+    "description": "This application can read the ERDF counter telereleve informations",
+    "keywords": ["edf", "erdf", "telereleve"],
+    "homepage": "https://github.com/Mactronique/edf-telereleve",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jean-Baptiste Nahan",
+            "email": "jbnahan@gmail.com",
+            "homepage": "http://nahan.fr"
+        }
+    ],
+        "autoload": {
+        "psr-4": {
+            "Mactronique\\TeleReleve\\": "src"
+        }
+    },
+    "bin": ["telereleve"],
+    "require": {
+        "symfony/console": "^2.8",
+        "symfony/config": "^2.8",
+        "symfony/yaml": "^2.8",
+        "psr/log": "^1.0"
+    }
+}
