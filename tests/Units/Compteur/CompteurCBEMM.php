@@ -14,11 +14,21 @@ use atoum;
 class CompteurCBEMM extends atoum
 {
 	public function testinit(){
-		$this->assert('init')
-			->if($this->newTestedInstance())
-			->and($this->testedInstance->defineDevicePath('/dev/tty1'))
-			->then()
+		$this
+			->assert('init')
+				->given($this->newTestedInstance())
+				->if($this->testedInstance->defineDevicePath('/dev/tty1'))
+				->then
 				->object($this->testedInstance)->isInstanceOf('Mactronique\TeleReleve\Compteur\CompteurCBEMM')
+			->assert('tty not found')
+				->given($this->newTestedInstance())
+				->if($this->testedInstance->defineDevicePath('/dev/tty1'))
+				->and($this->function->file_exists = false)
+				->then
+				->exception(function ($atoum) {
+					$atoum->testedInstance->readDevice();
+				})->isInstanceOf('RuntimeException');
+
 		;
 
 	}
