@@ -12,9 +12,14 @@
             "homepage": "http://nahan.fr"
         }
     ],
-        "autoload": {
+    "autoload": {
         "psr-4": {
             "Mactronique\\TeleReleve\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mactronique\\TeleReleve\\Tests": "tests"
         }
     },
     "bin": ["telereleve"],
@@ -24,5 +29,8 @@
         "symfony/yaml": "^2.8",
         "psr/log": "^1.0",
         "symfony/var-dumper": "^3.0"
+    },
+    "require-dev": {
+        "atoum/atoum": "^2.6"
     }
 }
