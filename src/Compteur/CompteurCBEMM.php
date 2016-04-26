@@ -26,15 +26,19 @@ class CompteurCBEMM implements CompteurInterface
      */
     public function read()
     {
-
+      $datas = $this->readDevice();
+      return Releve::makeFromData($datas);
     }
 
     private function readDevice(){
-        if(!file_exists($this->dev)){
+        if (!file_exists($this->dev)) {
             throw new \RuntimeException("The device does not exist : ".$this->dev, 1);
         }
 
         $handle = fopen ($this->dev, "r"); // ouverture du flux
+        if (false === $handle) {
+            throw new \RuntimeException("The device does not ready for read : ".$this->dev, 1);            
+        }
 
         while (fread($handle, 1) != chr(2)); // on attend la fin d'une trame pour commencer a avec la trame suivante
 
@@ -54,6 +58,14 @@ class CompteurCBEMM implements CompteurInterface
         $trame = chop(substr($trame,1,-1)); // on supprime les caracteres de debut et fin de trame
 
         $messages = explode(chr(10), $trame); // on separe les messages de la trame
-
+        $new = [];
+        foreach ($messages as $msg) {
+            $ligne = explode(' ', $msg, 3);
+            if (count($ligne)<2) {
+                continue;
+            }
+            $new[$ligne[0]] = $ligne[1];
+        }
+        return $new;
     }
 }

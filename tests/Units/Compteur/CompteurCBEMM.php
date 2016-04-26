@@ -26,8 +26,23 @@ class CompteurCBEMM extends atoum
 				->and($this->function->file_exists = false)
 				->then
 				->exception(function ($atoum) {
-					$atoum->testedInstance->readDevice();
-				})->isInstanceOf('RuntimeException');
+					$atoum->testedInstance->read();
+				})->isInstanceOf('RuntimeException')
+			->assert('tty found')
+				->given($this->newTestedInstance())
+				->if($this->testedInstance->defineDevicePath(dirname(dirname(__DIR__)).'/fixtures/datas.bin'))
+				->and($this->function->file_exists = true)
+				/*->and($this->function->fopen = function($path, $mode){
+					return fopen(__DIR__.'/../../fixtures/data.bin', 'r');
+				})
+				->and($this->function->fread = function($handle, $length) {
+					return fread($handle, $length);
+				})
+				->and($this->function->fclose = function($handle) {
+					return fclose($handle);
+				})*/
+				->then($releve = $this->testedInstance->read())
+				->object($releve)->isInstanceOf('Mactronique\TeleReleve\Compteur\Releve')
 
 		;
 
