@@ -87,7 +87,12 @@ class Releve implements ReleveInterface
         return $datas;
     }
 
-
+    /**
+     * Clean the value and return most detail if available.
+     * @param string $code
+     * @param string $value
+     * @return string
+     */
     private function cleanAndConvert($code, $value)
     {
         $codeA = ucfirst(strtolower($code));
