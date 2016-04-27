@@ -13,17 +13,24 @@ use atoum;
 
 class Releve extends atoum
 {
-	public function testinit(){
-		$this
-			->assert('init')
-				->given($this->testedInstance = function() {
-					return \Mactronique\TeleReleve\Compteur\Releve::makeFromData([]);
-				})
-				->then
-				->object($this->testedInstance)->isInstanceOf('Mactronique\TeleReleve\Compteur\Releve')
-				->array($this->testedInstance->index())->isEmpty()
-				->object($this->testedInstance->at())->isInstanceOf('DateTimeImmutable')
-		;
+    public function testinit()
+    {
+        $this
+            ->assert('init')
+                ->given($this->testedInstance = function () {
+                    return \Mactronique\TeleReleve\Compteur\Releve::makeFromData([]);
+                })
+                ->then
+                ->object($this->testedInstance)->isInstanceOf('Mactronique\TeleReleve\Compteur\Releve')
+                ->array($this->testedInstance->index())->isEmpty()
+                ->object($this->testedInstance->at())->isInstanceOf('DateTimeImmutable')
+            ->assert('describe')
+                ->given($this->testedInstance = function () {
+                    return \Mactronique\TeleReleve\Compteur\Releve::makeFromData(['ADCO'=>'test', 'OPTARIF'=>'HC..', 'ISOUSC'=>'60', 'HCHC'=>'001498178', 'HCHP'=>'007400125', 'IINST' => '002', 'IMAX' => '043', 'PAPP' => '00500']);
+                })
+                ->then
+                ->array($result = $this->testedInstance->describe())->hasSize(8)
+        ;
 
-	}
+    }
 }

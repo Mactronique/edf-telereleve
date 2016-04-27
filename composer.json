@@ -19,7 +19,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Mactronique\\TeleReleve\\Tests": "tests"
+            "Mactronique\\TeleReleve\\Tests\\": "tests"
         }
     },
     "bin": ["telereleve"],

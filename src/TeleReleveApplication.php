@@ -12,6 +12,7 @@ namespace Mactronique\TeleReleve;
 
 use Symfony\Component\Console\Application;
 use Mactronique\TeleReleve\Command\ReadCommand;
+use Mactronique\TeleReleve\Command\TestCommand;
 use Mactronique\TeleReleve\Configuration\MainConfiguration;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -32,6 +33,7 @@ class TeleReleveApplication extends Application
     {
         parent::__construct('Mactronique EDF Telereleve Reader', '0.1');
         $this->add(new ReadCommand());
+        $this->add(new TestCommand());
     }
 
     /**
@@ -78,6 +80,14 @@ class TeleReleveApplication extends Application
         }
 
         return parent::run($input, $output);
+    }
+
+    /**
+     * @return \Mactronique\TeleReleve\Compteur\CompteurInterface
+     */
+    public function compteur()
+    {
+        return $this->compteur;
     }
 
 
