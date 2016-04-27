@@ -16,9 +16,11 @@ class CompteurCBEMM implements CompteurInterface
     /**
      * @param string $device
      */
-    public function defineDevicePath($device)
+    public static function makeFromDevicePath($device)
     {
-        $this->dev = $device;
+        $compteur = new self();
+        $compteur->dev = $device;
+        return $compteur;
     }
 
     /*
@@ -26,36 +28,37 @@ class CompteurCBEMM implements CompteurInterface
      */
     public function read()
     {
-      $datas = $this->readDevice();
-      return Releve::makeFromData($datas);
+        $datas = $this->readDevice();
+        return Releve::makeFromData('CBEMM', $datas);
     }
 
-    private function readDevice(){
+    protected function readDevice()
+    {
         if (!file_exists($this->dev)) {
             throw new \RuntimeException("The device does not exist : ".$this->dev, 1);
         }
 
-        $handle = fopen ($this->dev, "r"); // ouverture du flux
+        $handle = fopen($this->dev, "r"); // ouverture du flux
         if (false === $handle) {
-            throw new \RuntimeException("The device does not ready for read : ".$this->dev, 1);            
+            throw new \RuntimeException("The device does not ready for read : ".$this->dev, 1);
         }
 
-        while (fread($handle, 1) != chr(2)); // on attend la fin d'une trame pour commencer a avec la trame suivante
+        while(fread($handle, 1) != chr(2)); // on attend la fin d'une trame pour commencer a avec la trame suivante
 
         $char  = '';
         $trame = '';
         $datas = '';
 
         while ($char != chr(2)) { // on lit tous les caracteres jusqu'a la fin de la trame
-          $char = fread($handle, 1);
-          if ($char != chr(2)){
-            $trame .= $char;
-          }
+            $char = fread($handle, 1);
+            if ($char != chr(2)) {
+                $trame .= $char;
+            }
         }
 
-        fclose ($handle); // on ferme le flux
+        fclose($handle); // on ferme le flux
 
-        $trame = chop(substr($trame,1,-1)); // on supprime les caracteres de debut et fin de trame
+        $trame = chop(substr($trame, 1, -1)); // on supprime les caracteres de debut et fin de trame
 
         $messages = explode(chr(10), $trame); // on separe les messages de la trame
         $new = [];

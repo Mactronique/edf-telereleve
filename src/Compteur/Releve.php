@@ -12,6 +12,11 @@ use Mactronique\TeleReleve\Datas\ERDF;
 
 class Releve implements ReleveInterface
 {
+
+    /**
+     * @var string
+     */
+    private $compteur;
     /**
      * @var \DateTimeImmutable
      */
@@ -25,9 +30,10 @@ class Releve implements ReleveInterface
     /**
      * @return array
      */
-    public static function makeFromData(array $datas)
+    public static function makeFromData($compteur, array $datas)
     {
         $releve = new self();
+        $releve->compteur = (string) $compteur;
         $releve->datas = $datas;
         $releve->recordedAt = new \DateTimeImmutable();
         return $releve;
@@ -62,18 +68,37 @@ class Releve implements ReleveInterface
      */
     public function describe()
     {
+        $description = 'Mactronique\TeleReleve\Datas\Description'.$this->compteur;
+        if (!class_exists($description)) {
+            throw new \LogicException("Unable to load description for counter : ".$description, 1);
+        }
         $datas = [];
         foreach ($this->datas as $key => $value) {
             $lower = strtolower($key);
             if (method_exists('Mactronique\TeleReleve\Datas\ERDF', $lower)) {
                 $value = sprintf('%s (%s)', ERDF::$lower($value), $value);
             } else {
-                $value = ERDF::_cleanAndConvert($key, $value);
+                $value = $this->cleanAndConvert($key, $value);
             }
-            $ligne = [$key, ERDF::_label($key), $value, ERDF::_unite($key)];
+            $ligne = [$key, $description::_label($key), $value, $description::_unite($key)];
             $datas[] = $ligne;
         }
         
         return $datas;
+    }
+
+
+    private function cleanAndConvert($code, $value)
+    {
+        $codeA = ucfirst(strtolower($code));
+        $className = 'Mactronique\TeleReleve\Datas\Convert'.$codeA;
+        if (!class_exists($className)) {
+            return $value;
+        }
+        $rc = new \ReflectionClass($className);
+        if (!$rc->isSubclassOf('Mactronique\TeleReleve\Datas\ConverterInterface')) {
+            return $value;
+        }
+        return $className::convert($code, $value);
     }
 }

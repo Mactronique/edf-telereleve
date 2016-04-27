@@ -132,12 +132,12 @@ class TeleReleveApplication extends Application
         $this->config = $processor->processConfiguration($configuration, $configs);
     }
 
-    private function loadCompteur(){
+    private function loadCompteur()
+    {
         $compteurClass  = 'Mactronique\TeleReleve\Compteur\Compteur'.$this->config['compteur'];
-        if(!class_exists($compteurClass)) {
+        if (!class_exists($compteurClass)) {
             throw new \LogicException("The class does not exists : ".$compteurClass, 1);
         }
-        $this->compteur = new $compteurClass();
-        $this->compteur->defineDevicePath($this->config['device']);
+        $this->compteur = $compteurClass::makeFromDevicePath($this->config['device']);
     }
 }

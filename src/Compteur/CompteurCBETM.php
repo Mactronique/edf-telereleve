@@ -6,17 +6,20 @@
  * @copyright 2016 - Jean-Baptiste Nahan
  * @license MIT
  */
+
 namespace Mactronique\TeleReleve\Compteur;
 
-interface CompteurInterface
+class CompteurCBETM extends CompteurCBEMM implements CompteurInterface
 {
+    
+
     /*
      * @return ReleveInterface
      */
-    public function read();
+    public function read()
+    {
+        $datas = $this->readDevice();
+        return Releve::makeFromData('CBETM', $datas);
+    }
 
-    /**
-     * @param string $device
-     */
-    public static function makeFromDevicePath($device);
 }
