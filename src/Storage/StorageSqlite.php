@@ -11,9 +11,9 @@ class StorageSqlite implements StorageInterface
     /**
      * @param string $path the path to the SQLITE File.
      */
-    public function __construct($path)
+    public function __construct(array $config)
     {
-        $this->path = $path;
+        $this->path = $config['path'];
     }
     /**
      * Save the releve
@@ -28,7 +28,7 @@ class StorageSqlite implements StorageInterface
 
         if ($db->busyTimeout(5000)) {
             $db->exec(sprintf(
-                "INSERT INTO releve (at, ptec, iisnt, hchc, hchp, base) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
+                "INSERT INTO releve (at, ptec, iinst, hchc, hchp, base) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
                 $releve->at()->format('Y-m-d H:i:s'),
                 $releve->valueAtIndex('PTEC'),
                 $releve->valueAtIndex('IINST'),

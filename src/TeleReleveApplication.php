@@ -104,7 +104,7 @@ class TeleReleveApplication extends Application
      *
      * @return \Mactronique\TeleReleve\Storage\StorageInterface
      */
-    public function getStorage()
+    public function storage()
     {
         return $this->storage;
     }
@@ -167,6 +167,7 @@ class TeleReleveApplication extends Application
         if (!class_exists($storageClass)) {
             throw new \LogicException("The class does not exists : ".$storageClass, 1);
         }
+        
         $this->storage = new $storageClass($this->config['storage']['parameters']);
     }
 }

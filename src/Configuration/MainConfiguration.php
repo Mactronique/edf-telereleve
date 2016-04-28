@@ -35,7 +35,7 @@ class MainConfiguration implements ConfigurationInterface
                             ->defaultValue('Sqlite')
                         ->end()
                         ->arrayNode('parameters')
-                            ->defaultValue(['datas.sqlite'])
+                            ->defaultValue(['path'=>'datas.sqlite'])
                             ->prototype('variable')
                         ->end()
                     ->end()
