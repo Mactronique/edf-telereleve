@@ -18,7 +18,7 @@ class Releve extends atoum
         $this
             ->assert('init')
                 ->given($this->testedInstance = function () {
-                    return \Mactronique\TeleReleve\Compteur\Releve::makeFromData([]);
+                    return \Mactronique\TeleReleve\Compteur\Releve::makeFromData('CBEMM', []);
                 })
                 ->then
                 ->object($this->testedInstance)->isInstanceOf('Mactronique\TeleReleve\Compteur\Releve')
@@ -26,7 +26,7 @@ class Releve extends atoum
                 ->object($this->testedInstance->at())->isInstanceOf('DateTimeImmutable')
             ->assert('describe')
                 ->given($this->testedInstance = function () {
-                    return \Mactronique\TeleReleve\Compteur\Releve::makeFromData(['ADCO'=>'test', 'OPTARIF'=>'HC..', 'ISOUSC'=>'60', 'HCHC'=>'001498178', 'HCHP'=>'007400125', 'IINST' => '002', 'IMAX' => '043', 'PAPP' => '00500']);
+                    return \Mactronique\TeleReleve\Compteur\Releve::makeFromData('CBEMM', ['ADCO'=>'test', 'OPTARIF'=>'HC..', 'ISOUSC'=>'60', 'HCHC'=>'001498178', 'HCHP'=>'007400125', 'IINST' => '002', 'IMAX' => '043', 'PAPP' => '00500']);
                 })
                 ->then
                 ->array($result = $this->testedInstance->describe())->hasSize(8)
