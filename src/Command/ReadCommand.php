@@ -29,6 +29,7 @@ class ReadCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        
+        $releve = $this->getApplication()->compteur()->read();
+        $this->getApplication()->storage()->save($releve);
     }
 }

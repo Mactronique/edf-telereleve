@@ -22,12 +22,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Yaml\Yaml;
+use Mactronique\TeleReleve\Storage\StorageInterface;
 
 class TeleReleveApplication extends Application
 {
     private $config;
 
+    /**
+     * @var \Mactronique\TeleReleve\Compteur\CompteurInterface
+     */
     private $compteur;
+
+    /**
+     * @var \Mactronique\TeleReleve\Storage\StorageInterface
+     */
+    private $storage;
 
     public function __construct()
     {
@@ -90,6 +99,16 @@ class TeleReleveApplication extends Application
         return $this->compteur;
     }
 
+    /**
+     * Gets the value of storage.
+     *
+     * @return \Mactronique\TeleReleve\Storage\StorageInterface
+     */
+    public function getStorage()
+    {
+        return $this->storage;
+    }
+
 
     /**
      * Gets the default input definition.
@@ -113,6 +132,7 @@ class TeleReleveApplication extends Application
         $this->loadConfigurationFile($configFile);
 
         $this->loadCompteur();
+        $this->loadStorage();
     }
 
     /**
@@ -139,5 +159,14 @@ class TeleReleveApplication extends Application
             throw new \LogicException("The class does not exists : ".$compteurClass, 1);
         }
         $this->compteur = $compteurClass::makeFromDevicePath($this->config['device']);
+    }
+
+    private function loadStorage()
+    {
+        $storageClass  = 'Mactronique\TeleReleve\Storage\Storage'.$this->config['storage']['driver'];
+        if (!class_exists($storageClass)) {
+            throw new \LogicException("The class does not exists : ".$storageClass, 1);
+        }
+        $this->storage = new $storageClass($this->config['storage']['parameters']);
     }
 }

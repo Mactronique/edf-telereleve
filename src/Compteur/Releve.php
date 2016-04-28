@@ -63,6 +63,19 @@ class Releve implements ReleveInterface
     }
 
     /**
+     * Retourn the value clean.
+     * @param string $code
+     * @return mixed
+     */
+    public function valueAtIndex($code)
+    {
+        if (!array_key_exists($code, $this->datas)) {
+            return null;
+        }
+        return $this->cleanAndConvert($code, $this->datas[$code]);
+    }
+
+    /**
      * Return array of array with Code, Label, Value, Unit
      * @return array
      */

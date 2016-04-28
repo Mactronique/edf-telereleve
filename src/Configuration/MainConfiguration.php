@@ -28,6 +28,18 @@ class MainConfiguration implements ConfigurationInterface
                 ->scalarNode('device')
                     ->defaultValue('/dev/ttyAMA0')
                 ->end()
+                ->arrayNode('storage')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('driver')
+                            ->defaultValue('Sqlite')
+                        ->end()
+                        ->arrayNode('parameters')
+                            ->defaultValue(['datas.sqlite'])
+                            ->prototype('variable')
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
