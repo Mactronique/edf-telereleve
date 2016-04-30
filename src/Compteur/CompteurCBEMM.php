@@ -34,6 +34,29 @@ class CompteurCBEMM implements CompteurInterface
 
     protected function readDevice()
     {
+        $trame = '';
+        $i=0;
+        while (strlen($trame)==0 && $i < 3) {
+            $trame = $this->readTrame();
+            $i++;
+        }
+
+        $trame = chop(substr($trame, 1, -1)); // on supprime les caracteres de debut et fin de trame
+
+        $messages = explode(chr(10), $trame); // on separe les messages de la trame
+        $new = [];
+        foreach ($messages as $msg) {
+            $ligne = explode(' ', $msg, 3);
+            if (count($ligne)<2) {
+                continue;
+            }
+            $new[$ligne[0]] = $ligne[1];
+        }
+        return $new;
+    }
+
+    protected function readTrame()
+    {
         if (!file_exists($this->dev)) {
             throw new \RuntimeException("The device does not exist : ".$this->dev, 1);
         }
@@ -57,18 +80,6 @@ class CompteurCBEMM implements CompteurInterface
         }
 
         fclose($handle); // on ferme le flux
-
-        $trame = chop(substr($trame, 1, -1)); // on supprime les caracteres de debut et fin de trame
-
-        $messages = explode(chr(10), $trame); // on separe les messages de la trame
-        $new = [];
-        foreach ($messages as $msg) {
-            $ligne = explode(' ', $msg, 3);
-            if (count($ligne)<2) {
-                continue;
-            }
-            $new[$ligne[0]] = $ligne[1];
-        }
-        return $new;
+        return $trame;
     }
 }
