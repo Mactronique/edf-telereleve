@@ -41,6 +41,8 @@ class CompteurCBEMM implements CompteurInterface
             $i++;
         }
 
+        echo "Read attempt : ".$i."\n";
+
         $trame = chop(substr($trame, 1, -1)); // on supprime les caracteres de debut et fin de trame
 
         $messages = explode(chr(10), $trame); // on separe les messages de la trame
