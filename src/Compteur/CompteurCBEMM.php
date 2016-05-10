@@ -32,6 +32,9 @@ class CompteurCBEMM implements CompteurInterface
         return Releve::makeFromData('CBEMM', $datas);
     }
 
+    /**
+     * Read the trame from device. Attempt 3 time read.
+     */
     protected function readDevice()
     {
         $trame = '';
@@ -41,7 +44,7 @@ class CompteurCBEMM implements CompteurInterface
             $i++;
         }
 
-        echo "Read attempt : ".$i."\n";
+        echo date('Y-m-d H:i:s T')." Read attempt : ".$i." for ".strlen($trame)." octet(s)\n";
 
         $trame = chop(substr($trame, 1, -1)); // on supprime les caracteres de debut et fin de trame
 
@@ -56,7 +59,9 @@ class CompteurCBEMM implements CompteurInterface
         }
         return $new;
     }
-
+    /**
+     * Read the devices for get one trame.
+     */
     protected function readTrame()
     {
         if (!file_exists($this->dev)) {
