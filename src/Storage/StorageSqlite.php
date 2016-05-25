@@ -39,4 +39,23 @@ class StorageSqlite implements StorageInterface
         }
 
     }
+
+    public function read($at)
+    {
+        $db = new \Sqlite3($this->path);
+
+        $db->exec('CREATE TABLE IF NOT EXISTS releve (at TEXT, ptec TEXT, iinst REAL, hchc REAL, hchp REAL, base REAL);');
+
+        if ($db->busyTimeout(5000)) {
+            $result = $db->query(sprintf(
+                "SELECT * FROM releve WHERE at like '%s' AND hchc != '' AND hchp != '' ORDER BY at ASC",
+                $at
+            ));
+            $datas = [];
+            while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+                $datas[] = $row;
+            }
+            return $datas;
+        }
+    }
 }

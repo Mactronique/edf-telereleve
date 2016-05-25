@@ -13,6 +13,7 @@ namespace Mactronique\TeleReleve;
 use Symfony\Component\Console\Application;
 use Mactronique\TeleReleve\Command\ReadCommand;
 use Mactronique\TeleReleve\Command\TestCommand;
+use Mactronique\TeleReleve\Command\CountReleveCommand;
 use Mactronique\TeleReleve\Configuration\MainConfiguration;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -23,6 +24,9 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Yaml\Yaml;
 use Mactronique\TeleReleve\Storage\StorageInterface;
+use Swift_SmtpTransport;
+use Swift_Mailer;
+use Swift_Message;
 
 class TeleReleveApplication extends Application
 {
@@ -43,6 +47,7 @@ class TeleReleveApplication extends Application
         parent::__construct('Mactronique EDF Telereleve Reader', '0.1');
         $this->add(new ReadCommand());
         $this->add(new TestCommand());
+        $this->add(new CountReleveCommand());
     }
 
     /**
@@ -107,6 +112,31 @@ class TeleReleveApplication extends Application
     public function storage()
     {
         return $this->storage;
+    }
+
+    /**
+     * Sent email
+     */
+    public function sendMessage($subject, $body)
+    {
+        if (!$this->config['enable_email']) {
+            throw new Exception("Email sending is not enabled", 1);
+        }
+
+        $transport = Swift_SmtpTransport::newInstance($this->config['smtp']['server'], $this->config['smtp']['port'], $this->config['smtp']['security'])
+            ->setUsername($this->config['smtp']['username'])
+            ->setPassword($this->config['smtp']['password']);
+        $mailer = Swift_Mailer::newInstance($transport);
+        $message = Swift_Message::newInstance($subject)
+          ->setFrom([$this->config['smtp']['from']['email']=> $this->config['smtp']['from']['display_name']])
+          ->setTo([$this->config['smtp']['to']['email']=> $this->config['smtp']['to']['display_name']])
+          ->setBody($body)
+          ;
+        //dump($message->getBody());
+        //return;
+
+        // Send the message
+        $result = $mailer->send($message);
     }
 
 
