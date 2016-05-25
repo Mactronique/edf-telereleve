@@ -103,6 +103,7 @@ Consommation total : %s Kwh
                     $conso_totale
                 )
             );
+            $output->writeln('<comment>E-mail sent !</comment>');
         }
 
     }
