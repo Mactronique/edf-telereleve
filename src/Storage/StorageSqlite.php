@@ -24,7 +24,7 @@ class StorageSqlite implements StorageInterface
     {
         $db = new \Sqlite3($this->path);
 
-        $db->exec('CREATE TABLE IF NOT EXISTS releve (at TEXT, ptec TEXT, iinst REAL, hchc REAL, hchp REAL, base REAL);');
+        $db->exec('CREATE TABLE IF NOT EXISTS releve (at TEXT PRIMARY KEY, ptec TEXT, iinst REAL, hchc REAL, hchp REAL, base REAL);');
 
         if ($db->busyTimeout(5000)) {
             $db->exec(sprintf(
