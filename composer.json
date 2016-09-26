@@ -32,6 +32,8 @@
         "swiftmailer/swiftmailer": "^5.4"
     },
     "require-dev": {
-        "atoum/atoum": "^2.6"
+        "atoum/atoum": "^2.6",
+        "guzzlehttp/guzzle": "^6.2",
+        "influxdb/influxdb-php": "^1.4"
     }
 }
