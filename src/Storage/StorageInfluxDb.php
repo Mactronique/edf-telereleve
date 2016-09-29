@@ -37,11 +37,11 @@ class StorageInfluxDb implements StorageInterface
             null,
             [],
             [
-                'ptec' => $releve->valueAtIndex('PTEC'),
-                'iinst' => $releve->valueAtIndex('IINST'),
-                'hchc' => $releve->valueAtIndex('HCHC'),
-                'hchp' => $releve->valueAtIndex('HCHP'),
-                'base' => $releve->valueAtIndex('BASE')
+                'ptec' => $this->getIndexOrZero($releve, 'PTEC'),
+                'iinst' => $this->getIndexOrZero($releve, 'IINST'),
+                'hchc' => $this->getIndexOrZero($releve, 'HCHC'),
+                'hchp' => $this->getIndexOrZero($releve, 'HCHP'),
+                'base' => $this->getIndexOrZero($releve, 'BASE'),
             ],
             $releve->at()->getTimestamp()
         );
@@ -75,5 +75,14 @@ class StorageInfluxDb implements StorageInterface
         $client  = new \InfluxDB\Client($this->config['host'], $this->config['port']);
 
         return $client->selectDB($this->config['database']);
+    }
+
+    private function getIndexOrZero($releve, $index)
+    {
+	$value = $releve->valueAtIndex($index);
+	if(empty($value)) {
+	     return '0';
+	}
+	return $value;
     }
 }
