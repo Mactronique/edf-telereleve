@@ -54,17 +54,17 @@ class StorageInfluxDb implements StorageInterface
     public function read($at)
     {
         $database = $this->getDatabase();
+        $result = $database->query(sprintf("SELECT * FROM releve WHERE hchc > 0 AND hchp > 0 AND time > '%s 00:00:00' and time < '%s 23:59:59' ORDER BY time ASC", $at, $at));
 
-        $result = $database->query("SELECT * FROM releve WHERE hchc != '' AND hchp != '' ORDER BY time DESC LIMIT 1");
-        
         $datas = [];
-        while ($row = $result->getPoints()) {
-            $data = $row->getFields();
-            $data['at'] = date('Y-m-d H:i:s', $row->getTimestamp());
+	$points = $result->getPoints();
+        foreach ($points as $row) {
+            $data = $row;
+            $data['at'] = $data['time'];
+            unset($data['time']);
             $datas[] = $data;
         }
         return $datas;
-        
     }
 
     /**
@@ -81,7 +81,7 @@ class StorageInfluxDb implements StorageInterface
     {
 	$value = $releve->valueAtIndex($index);
 	if(empty($value)) {
-	     return '0';
+	     return 0;
 	}
 	return $value;
     }
