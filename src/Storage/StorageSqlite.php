@@ -48,7 +48,7 @@ class StorageSqlite implements StorageInterface
 
         if ($db->busyTimeout(5000)) {
             $result = $db->query(sprintf(
-                "SELECT * FROM releve WHERE at like '%s' AND hchc != '' AND hchp != '' ORDER BY at ASC",
+                "SELECT * FROM releve WHERE at like '%s %%' AND hchc != '' AND hchp != '' ORDER BY at ASC",
                 $at
             ));
             $datas = [];

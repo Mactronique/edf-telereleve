@@ -63,7 +63,7 @@ class CountReleveCommand extends Command
         }
 
         $output->writeln('Read count for <info>'.$date.'</info>: ');
-        $data = $this->getApplication()->storage()->read($date.' %');
+        $data = $this->getApplication()->storage()->read($date);
         $nb = count($data);
         $output->writeln('Row count : <info>'.$nb.'</info>');
 

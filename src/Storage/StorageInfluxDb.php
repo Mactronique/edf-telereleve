@@ -37,11 +37,11 @@ class StorageInfluxDb implements StorageInterface
             null,
             [],
             [
-                'ptec' => $releve->valueAtIndex('PTEC'),
-                'iinst' => $releve->valueAtIndex('IINST'),
-                'hchc' => $releve->valueAtIndex('HCHC'),
-                'hchp' => $releve->valueAtIndex('HCHP'),
-                'base' => $releve->valueAtIndex('BASE')
+                'ptec' => $this->getIndexOrZero($releve, 'PTEC'),
+                'iinst' => $this->getIndexOrZero($releve, 'IINST'),
+                'hchc' => $this->getIndexOrZero($releve, 'HCHC'),
+                'hchp' => $this->getIndexOrZero($releve, 'HCHP'),
+                'base' => $this->getIndexOrZero($releve, 'BASE'),
             ],
             $releve->at()->getTimestamp()
         );
@@ -54,17 +54,17 @@ class StorageInfluxDb implements StorageInterface
     public function read($at)
     {
         $database = $this->getDatabase();
+        $result = $database->query(sprintf("SELECT * FROM releve WHERE hchc > 0 AND hchp > 0 AND time > '%s 00:00:00' and time < '%s 23:59:59' ORDER BY time ASC", $at, $at));
 
-        $result = $database->query("SELECT * FROM releve WHERE hchc != '' AND hchp != '' ORDER BY time DESC LIMIT 1");
-        
         $datas = [];
-        while ($row = $result->getPoints()) {
-            $data = $row->getFields();
-            $data['at'] = date('Y-m-d H:i:s', $row->getTimestamp());
+	$points = $result->getPoints();
+        foreach ($points as $row) {
+            $data = $row;
+            $data['at'] = $data['time'];
+            unset($data['time']);
             $datas[] = $data;
         }
         return $datas;
-        
     }
 
     /**
@@ -75,5 +75,14 @@ class StorageInfluxDb implements StorageInterface
         $client  = new \InfluxDB\Client($this->config['host'], $this->config['port']);
 
         return $client->selectDB($this->config['database']);
+    }
+
+    private function getIndexOrZero($releve, $index)
+    {
+	$value = $releve->valueAtIndex($index);
+	if(empty($value)) {
+	     return 0;
+	}
+	return $value;
     }
 }

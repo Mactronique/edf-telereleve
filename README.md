@@ -11,6 +11,12 @@ Open terminal and execute :
 $ php composer.phar install --no-dev -o
 ```
 
+If you want use InfluxDB storage, exetute this command
+
+```
+$ php composer.phar require influxdb/influxdb-php:^1.4
+```
+
 # Usage
 
 In the terminal :
