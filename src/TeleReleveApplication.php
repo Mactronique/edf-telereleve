@@ -44,7 +44,7 @@ class TeleReleveApplication extends Application
 
     public function __construct()
     {
-        parent::__construct('Mactronique EDF Telereleve Reader', '0.2');
+        parent::__construct('Mactronique EDF Telereleve Reader', '0.3');
         $this->add(new ReadCommand());
         $this->add(new TestCommand());
         $this->add(new CountReleveCommand());
