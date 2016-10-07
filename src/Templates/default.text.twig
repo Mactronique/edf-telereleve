@@ -1,0 +1,22 @@
+Bonjour,
+
+Voici le décompte du nombre de télérelevés réalisé le {{ date|date('d/m/Y') }}
+Il y a eu {{ releve_count }} relevé(s).
+
+Période      : {{ periode_debut }} {{ periode_fin }}
+Heure creuse : {{ data[0][1] }} {{ data[0][2] }} Soit un total de {{ data[0][3] }} kWh
+Heure pleine : {{ data[1][1] }} {{ data[1][2] }} Soit un total de {{ data[1][3] }} kWh
+Consommation totale : {{ conso_total }} kWh
+
+{% if deltas is defined %}
+Écart entre le {{ date|date('d/m/Y') }} et la veille :
+
+Heure creuse : {{ deltas[0][1] }}  kWh pour le {{ date|date('d/m/Y') }} et {{ deltas[0][2] }} kWh pour le  {{ dateYesterdays|date('d/m/Y') }} soit un écart de {{ deltas[0][3] }} kWh
+Heure pleine : {{ deltas[1][1] }}  kWh pour le {{ date|date('d/m/Y') }} et {{ deltas[1][2] }} kWh  pour le {{ dateYesterdays|date('d/m/Y') }} soit un écart de {{ deltas[1][3] }} kWh
+
+Sur toute la journée du {{ date|date('d/m/Y') }}, {{ deltas[2][1] }} kWh ont été consommés et pour la journée du {{ dateYesterdays|date('d/m/Y') }}, {{ deltas[2][2] }} kWh ont été consommés soit un écart total de {{ deltas[2][3] }} kWh.
+
+Si les écarts sont négatifs, la consommation a baissé. S'ils sont positifs, la consommation a augmenté.
+{% endif %}
+
+Cordialement.

@@ -123,6 +123,13 @@ class TeleReleveApplication extends Application
             throw new Exception("Email sending is not enabled", 1);
         }
 
+        $loader = new \Twig_Loader_Filesystem(__DIR__.'/Templates');
+        $twig = new \Twig_Environment($loader, array(
+            //'cache' => '/path/to/compilation_cache',
+        ));
+
+        $content = $twig->render($this->config['template'], $body);
+
         $transport = Swift_SmtpTransport::newInstance($this->config['smtp']['server'], $this->config['smtp']['port'], $this->config['smtp']['security'])
             ->setUsername($this->config['smtp']['username'])
             ->setPassword($this->config['smtp']['password']);
@@ -130,7 +137,7 @@ class TeleReleveApplication extends Application
         $message = Swift_Message::newInstance($subject)
           ->setFrom([$this->config['smtp']['from']['email']=> $this->config['smtp']['from']['display_name']])
           ->setTo([$this->config['smtp']['to']['email']=> $this->config['smtp']['to']['display_name']])
-          ->setBody($body)
+          ->setBody($content, $this->config['smtp']['mime'])
           ;
         //dump($message->getBody());
         //return;

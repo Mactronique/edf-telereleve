@@ -29,7 +29,8 @@
         "symfony/yaml": "^2.8",
         "psr/log": "^1.0",
         "symfony/var-dumper": "^3.0",
-        "swiftmailer/swiftmailer": "^5.4"
+        "swiftmailer/swiftmailer": "^5.4",
+        "twig/twig": "^1.26"
     },
     "suggest": {
         "influxdb/influxdb-php": "For use InfluxDB Storage"
