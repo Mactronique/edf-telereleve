@@ -45,7 +45,7 @@ class CountReleveCommand extends Command
             $dayYesterdays = $d->sub(new \DateInterval('P1D'));
             $dateYesterdays = $dayYesterdays->format('Y-m-d');
             $output->writeln('Read count for <info>'.$dateYesterdays.'</info>: ');
-            $data = $this->getApplication()->storage()->read($dateYesterdays.' %');
+            $data = $this->getApplication()->storage()->read($dateYesterdays);
             $nbYesterdays = count($data);
             $output->writeln('Row count : <info>'.$nbYesterdays.'</info>');
 
