@@ -31,6 +31,9 @@
         "symfony/var-dumper": "^3.0",
         "swiftmailer/swiftmailer": "^5.4"
     },
+    "suggest": {
+        "influxdb/influxdb-php": "For use InfluxDB Storage"
+    },
     "require-dev": {
         "atoum/atoum": "^2.6",
         "guzzlehttp/guzzle": "^6.2",
