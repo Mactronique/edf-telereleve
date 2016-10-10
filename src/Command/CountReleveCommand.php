@@ -19,6 +19,9 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Console\Helper\TableHelper;
 
+/**
+ * This command compute the daily consumption.
+ */
 class CountReleveCommand extends Command
 {
     protected function configure()
@@ -30,6 +33,24 @@ class CountReleveCommand extends Command
                 new InputOption('send-email', null, InputOption::VALUE_NONE, 'Send by email. If not set throw exception.'),
                 new InputOption('yesterdays', null, InputOption::VALUE_NONE, 'Read the data for yesterdays'),
             ])
+            ->setDescription('This command compute the daily consumption.')
+            ->setHelp("This command can send email and compare the consumption for one days with before day.
+Exemple : telereleve count --date 2016-10-05 --yesterdays --send-email
+
+Before try send a email, please, set the SMTP configuration into 'config.yml' file. This is the minimal confituration options :
+smtp:
+    server: my-smtp-server
+    from:
+        display_name: Me
+        email: my-email@domain.tld
+    to:
+        display_name: Me
+        email: my-email@domain.tld
+
+You can change and custom the email template. The custom template do save into 'src/Templates' folder and is writen in Twig template language.
+For set your custom template, set the option 'template' into the 'config.yml' file.
+The default type-mime for email is 'text/plain'. If your custom template use the HTML or other mime-type, set the 'mime' option into the 'smtp' section into the 'config.yml' file.
+")
         ;
     }
 
@@ -51,8 +72,7 @@ class CountReleveCommand extends Command
 
             if ($nbYesterdays>0) {
                 $table_datasY = $this->computeDayConsumption($data);
-                //dump($first);
-                //dump($last);
+
                 $table = new TableHelper();
                 $table->setHeaders(['Pricing', 'Start index (Kwh)', 'Last index (Kwh)', 'Delta (Kwh)']);
                 $table->setRows($table_datasY[0]);
@@ -69,8 +89,7 @@ class CountReleveCommand extends Command
 
         if ($nb>0) {
             $table_datas = $this->computeDayConsumption($data);
-            //dump($first);
-            //dump($last);
+
             $table = new TableHelper();
             $table->setHeaders(['Pricing', 'Start index (Kwh)', 'Last index (Kwh)', 'Delta (Kwh)']);
             $table->setRows($table_datas[0]);
@@ -78,14 +97,12 @@ class CountReleveCommand extends Command
 
             $output->writeln("Total : <info>".$table_datas[1]."</info> Kwh");
         }
-        //dump($hchc);
-        //dump($hchp); 
 
         if (isset($table_datasY)) {
             $deltas = [
                 [$table_datas[0][0][0], $table_datasY[0][0][3], $table_datas[0][0][3], sprintf('%10s', number_format($table_datas[2] - $table_datasY[2], 3, ',', ' '))],
                 [$table_datas[0][1][0], $table_datasY[0][1][3], $table_datas[0][1][3], sprintf('%10s', number_format($table_datas[3] - $table_datasY[3], 3, ',', ' ')),],
-                ['Total day', sprintf('%10s', $table_datasY[1]), sprintf('%10s', $table_datas[1]), sprintf('%10s', number_format(($table_datas[2]+$table_datas[3] - ($table_datasY[2]+$table_datasY[3])), 3, ',', ' ')),],
+                ['Total day', sprintf('%10s', $table_datas[1]), sprintf('%10s', $table_datasY[1]), sprintf('%10s', number_format(($table_datas[2]+$table_datas[3] - ($table_datasY[2]+$table_datasY[3])), 3, ',', ' ')),],
             ];
             $output->writeln("Delta between tow days :");
             $table = new TableHelper();
@@ -94,7 +111,6 @@ class CountReleveCommand extends Command
             $table->render($output);
         }
 
-        //return;
         if ($input->getOption('send-email')) {
             $datasEmail = [
                 'date'=> new \DateTime($date),
@@ -120,33 +136,36 @@ class CountReleveCommand extends Command
 
     }
 
+    /**
+     * Compute the consumption for one day.
+     * @param array $data Data from storage
+     *
+     * @return array
+     */
     private function computeDayConsumption(array $data)
     {
         $table_data = [['', '', '', ''], ['', '', '', '']];
         $conso_totale = "";
-            $first = $data[0];
-            $last = end($data);
-            $hchc = ($last['hchc'] - $first['hchc'])/1000;
-            $hchp = ($last['hchp'] - $first['hchp'])/1000;
+        $first = $data[0];
+        $last = end($data);
+        $hchc = ($last['hchc'] - $first['hchc'])/1000;
+        $hchp = ($last['hchp'] - $first['hchp'])/1000;
 
-            $table_data[0] = [
-                'Heures creuses',
-                sprintf('%10s', number_format($first['hchc']/1000, 0, ',', ' ')),
-                sprintf('%10s', number_format($last['hchc']/1000, 0, ',', ' ')),
-                sprintf('%10s', number_format($hchc, 3, ',', ' ')),
-            ];
-            $table_data[1] = [
-                'Heures pleines',
-                sprintf('%10s', number_format($first['hchp']/1000, 0, ',', ' ')),
-                sprintf('%10s', number_format($last['hchp']/1000, 0, ',', ' ')),
-                sprintf('%10s', number_format($hchp, 3, ',', ' ')),
-            ];
+        $table_data[0] = [
+            'Heures creuses',
+            sprintf('%10s', number_format($first['hchc']/1000, 0, ',', ' ')),
+            sprintf('%10s', number_format($last['hchc']/1000, 0, ',', ' ')),
+            sprintf('%10s', number_format($hchc, 3, ',', ' ')),
+        ];
+        $table_data[1] = [
+            'Heures pleines',
+            sprintf('%10s', number_format($first['hchp']/1000, 0, ',', ' ')),
+            sprintf('%10s', number_format($last['hchp']/1000, 0, ',', ' ')),
+            sprintf('%10s', number_format($hchp, 3, ',', ' ')),
+        ];
 
-            $conso_totale = number_format($hchc + $hchp, 3, ',', ' ');
-            //dump($first);
-            //dump($last);
-            
-        
+        $conso_totale = number_format($hchc + $hchp, 3, ',', ' ');
+
         return [$table_data, $conso_totale, $hchc, $hchp];
     }
 }
