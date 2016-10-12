@@ -100,8 +100,8 @@ The default type-mime for email is 'text/plain'. If your custom template use the
 
         if (isset($table_datasY)) {
             $deltas = [
-                [$table_datas[0][0][0], $table_datasY[0][0][3], $table_datas[0][0][3], sprintf('%10s', number_format($table_datas[2] - $table_datasY[2], 3, ',', ' '))],
-                [$table_datas[0][1][0], $table_datasY[0][1][3], $table_datas[0][1][3], sprintf('%10s', number_format($table_datas[3] - $table_datasY[3], 3, ',', ' ')),],
+                [$table_datas[0][0][0], $table_datas[0][0][3], $table_datasY[0][0][3], sprintf('%10s', number_format($table_datas[2] - $table_datasY[2], 3, ',', ' '))],
+                [$table_datas[0][1][0], $table_datas[0][1][3], $table_datasY[0][1][3], sprintf('%10s', number_format($table_datas[3] - $table_datasY[3], 3, ',', ' ')),],
                 ['Total day', sprintf('%10s', $table_datas[1]), sprintf('%10s', $table_datasY[1]), sprintf('%10s', number_format(($table_datas[2]+$table_datas[3] - ($table_datasY[2]+$table_datasY[3])), 3, ',', ' ')),],
             ];
             $output->writeln("Delta between tow days :");
