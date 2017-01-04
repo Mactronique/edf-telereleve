@@ -40,6 +40,15 @@ class StorageSqlite implements StorageInterface
 
     }
 
+
+    /**
+     * Return the array of configuration
+     */
+    public function configuration(): array
+    {
+        return ['path'=>$this->path];
+    }
+
     public function read($at)
     {
         $db = new \Sqlite3($this->path);

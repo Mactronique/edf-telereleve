@@ -14,6 +14,7 @@ use Symfony\Component\Console\Application;
 use Mactronique\TeleReleve\Command\ReadCommand;
 use Mactronique\TeleReleve\Command\TestCommand;
 use Mactronique\TeleReleve\Command\CountReleveCommand;
+use Mactronique\TeleReleve\Command\DumpStorageCommand;
 use Mactronique\TeleReleve\Configuration\MainConfiguration;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -48,6 +49,7 @@ class TeleReleveApplication extends Application
         $this->add(new ReadCommand());
         $this->add(new TestCommand());
         $this->add(new CountReleveCommand());
+        $this->add(new DumpStorageCommand());
     }
 
     /**

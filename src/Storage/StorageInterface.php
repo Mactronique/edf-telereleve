@@ -12,4 +12,9 @@ interface StorageInterface
      * @return mixed
      */
     public function save(ReleveInterface $releve);
+
+    /**
+     * Return the array of configuration
+     */
+    public function configuration(): array;
 }
