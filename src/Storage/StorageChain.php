@@ -3,9 +3,11 @@
 namespace Mactronique\TeleReleve\Storage;
 
 use Mactronique\TeleReleve\Compteur\ReleveInterface;
+use Psr\Log\LoggerAwareTrait;
 
 class StorageChain implements StorageInterface
 {
+    use LoggerAwareTrait;
     /**
      * @var array Configurations
      */
@@ -33,6 +35,8 @@ class StorageChain implements StorageInterface
         $this->configs = $configs;
 
         $this->loadStorage();
+
+        $this->logger = new \Psr\Log\NullLogger();
         
     }
 
@@ -47,6 +51,7 @@ class StorageChain implements StorageInterface
             try {
                 $storage->save($releve);
             } catch (\Throwable $e) {
+                $this->logger->error('ChainStorage : Error on save', ['storage'=>$key, 'releve'=>['at'=>$releve->at()->format('c'), 'datas'=>$releve->index()], 'exception'=>$e]);
                 if (!$this->configs['skip_on_storage_error']) {
                     throw new StorageException(sprintf('Error or exception on storage %s', $key), $e->getCode(), $e);
                 }

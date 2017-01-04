@@ -3,9 +3,12 @@
 namespace Mactronique\TeleReleve\Storage;
 
 use Mactronique\TeleReleve\Compteur\ReleveInterface;
+use Psr\Log\LoggerAwareTrait;
 
 class StorageInfluxDb implements StorageInterface
 {
+    use LoggerAwareTrait;
+
     private $config;
 
     /**
@@ -23,6 +26,7 @@ class StorageInfluxDb implements StorageInterface
             throw new StorageException("Influx Database not set", 1);
         }
         $this->config = $config;
+        $this->logger = new \Psr\Log\NullLogger();
 
     }
     /**

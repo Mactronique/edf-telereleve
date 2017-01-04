@@ -3,9 +3,13 @@
 namespace Mactronique\TeleReleve\Storage;
 
 use Mactronique\TeleReleve\Compteur\ReleveInterface;
+use Psr\Log\LoggerAwareTrait;
 
 class StorageSqlite implements StorageInterface
 {
+
+    use LoggerAwareTrait;
+    
     private $path;
 
     /**
@@ -14,6 +18,7 @@ class StorageSqlite implements StorageInterface
     public function __construct(array $config)
     {
         $this->path = $config['path'];
+        $this->logger = new \Psr\Log\NullLogger();
     }
     /**
      * Save the releve

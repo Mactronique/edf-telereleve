@@ -3,8 +3,9 @@
 namespace Mactronique\TeleReleve\Storage;
 
 use Mactronique\TeleReleve\Compteur\ReleveInterface;
+use Psr\Log\LoggerAwareInterface;
 
-interface StorageInterface
+interface StorageInterface extends LoggerAwareInterface
 {
     /**
      * Save the releve

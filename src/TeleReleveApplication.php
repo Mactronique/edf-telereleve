@@ -31,7 +31,15 @@ use Swift_Message;
 
 class TeleReleveApplication extends Application
 {
+    /**
+     * @var array
+     */
     private $config;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
 
     /**
      * @var \Mactronique\TeleReleve\Compteur\CompteurInterface
@@ -96,6 +104,14 @@ class TeleReleveApplication extends Application
         }
 
         return parent::run($input, $output);
+    }
+
+    /**
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function logger()
+    {
+        return $this->logger;
     }
 
     /**
@@ -169,7 +185,7 @@ class TeleReleveApplication extends Application
     {
         $configFile = dirname(__DIR__).'/config.yml';
         $this->loadConfigurationFile($configFile);
-
+        $this->loadLogger();
         $this->loadCompteur();
         $this->loadStorage();
     }
@@ -191,6 +207,14 @@ class TeleReleveApplication extends Application
         $this->config = $processor->processConfiguration($configuration, $configs);
     }
 
+    private function loadLogger()
+    {
+        $file = $this->config['log_file'];
+
+        $this->logger = new \Monolog\Logger('main');
+        $this->logger->pushHandler(\Monolog\Handler\StreamHandler($file));
+    }
+
     private function loadCompteur()
     {
         $compteurClass  = 'Mactronique\TeleReleve\Compteur\Compteur'.$this->config['compteur'];
@@ -206,7 +230,8 @@ class TeleReleveApplication extends Application
         if (!class_exists($storageClass)) {
             throw new \LogicException("The class does not exists : ".$storageClass, 1);
         }
-        
+
         $this->storage = new $storageClass($this->config['storage']['parameters']);
+        $this->storage->setLogger($this->logger());
     }
 }
