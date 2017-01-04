@@ -86,6 +86,7 @@ storage:
         skip_on_storage_error: false # if true, no error stop the save process. If one storage is on error, the error is ignored.
 enable_email: false # By default, the email sending is disabled.
 template: default.text.twig # The name file for default template for email body content.
+log_file: telereleve.log # The file log
 smtp:
 	server: 127.0.0.1
 	port: 25
