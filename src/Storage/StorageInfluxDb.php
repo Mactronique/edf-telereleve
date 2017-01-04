@@ -65,6 +65,10 @@ class StorageInfluxDb implements StorageInterface
         return $this->configs;
     }
 
+    /**
+     * @param string $at
+     * @return array
+     */
     public function read($at)
     {
         $database = $this->getDatabase();

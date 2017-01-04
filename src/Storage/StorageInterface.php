@@ -19,4 +19,10 @@ interface StorageInterface extends LoggerAwareInterface
      * @return array
      */
     public function configuration();
+
+    /**
+     * @param string $at
+     * @return array
+     */
+    public function read($at);
 }

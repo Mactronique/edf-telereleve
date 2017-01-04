@@ -71,6 +71,17 @@ class StorageChain implements StorageInterface
     }
 
     /**
+     * @param string $at
+     * @return array
+     */
+    public function read($at)
+    {
+        reset($this->storage);
+        $storage = current($this->storage);
+        return $storage->read($at);
+    }
+
+    /**
      * Init all configured storage
      */
     private function loadStorage()
