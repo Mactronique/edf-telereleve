@@ -39,9 +39,10 @@ class StorageInfluxDb implements StorageInterface
         $point = new \InfluxDB\Point(
             'releve',
             null,
-            [],
             [
                 'ptec' => $this->getIndexOrZero($releve, 'PTEC'),
+            ],
+            [
                 'iinst' => $this->getIndexOrZero($releve, 'IINST'),
                 'hchc' => $this->getIndexOrZero($releve, 'HCHC'),
                 'hchp' => $this->getIndexOrZero($releve, 'HCHP'),
