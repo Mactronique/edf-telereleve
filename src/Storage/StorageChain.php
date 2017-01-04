@@ -33,6 +33,7 @@ class StorageChain implements StorageInterface
         }
 
         $this->configs = $configs;
+        $this->storages = [];
 
         $this->loadStorage();
 
@@ -92,7 +93,7 @@ class StorageChain implements StorageInterface
                 throw new \LogicException("Unable to load the Chain storage into an chain storage.", 500);
             }
 
-            $this->storage[$key] = new $storageClass($config['parameters']);
+            $this->storages[$key] = new $storageClass($config['parameters']);
         }
         
     }

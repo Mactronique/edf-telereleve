@@ -212,7 +212,7 @@ class TeleReleveApplication extends Application
         $file = $this->config['log_file'];
 
         $this->logger = new \Monolog\Logger('main');
-        $this->logger->pushHandler(\Monolog\Handler\StreamHandler($file));
+        $this->logger->pushHandler(new \Monolog\Handler\StreamHandler($file));
     }
 
     private function loadCompteur()
