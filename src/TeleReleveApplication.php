@@ -178,7 +178,7 @@ class TeleReleveApplication extends Application
     private function loadConfigurationFile($configFile)
     {
         if (!file_exists($configFile)) {
-            throw new \Exception('Le fichier de configuration ('.$configFile.') est absent ! ', 123);
+            throw new \Exception('The configuration file ('.$configFile.') is not found ! ', 123);
         }
 
         $config = Yaml::parse(file_get_contents($configFile));
