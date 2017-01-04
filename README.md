@@ -69,6 +69,21 @@ storage:
 		host: localhost
 		port: 8086
 		database: telereleve
+# Parameters array for Chain storage driver :
+    driver: Chain
+    parameters:
+        storages: # set all storage here. You can set many storage with same driver 
+            sqlite: # the key for driver. Is used on error. This array contains the driver configuration.
+                driver: Sqlite
+                parameters:
+                    path: datas.sqlite
+            influx:
+                driver: InfluxDb
+                parameters:
+                    host: localhost
+                    port: 3386
+                    database: telereleve
+        skip_on_storage_error: false # if true, no error stop the save process. If one storage is on error, the error is ignored.
 enable_email: false # By default, the email sending is disabled.
 template: default.text.twig # The name file for default template for email body content.
 smtp:
