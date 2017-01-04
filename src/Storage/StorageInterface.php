@@ -15,6 +15,7 @@ interface StorageInterface
 
     /**
      * Return the array of configuration
+     * @return array
      */
-    public function configuration(): array;
+    public function configuration();
 }

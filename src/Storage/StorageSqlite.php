@@ -43,8 +43,9 @@ class StorageSqlite implements StorageInterface
 
     /**
      * Return the array of configuration
+     * @return array
      */
-    public function configuration(): array
+    public function configuration()
     {
         return ['path'=>$this->path];
     }

@@ -53,8 +53,9 @@ class StorageInfluxDb implements StorageInterface
 
     /**
      * Return the array of configuration
+     * @return array
      */
-    public function configuration(): array
+    public function configuration()
     {
         return $this->configs;
     }
@@ -65,7 +66,7 @@ class StorageInfluxDb implements StorageInterface
         $result = $database->query(sprintf("SELECT * FROM releve WHERE hchc > 0 AND hchp > 0 AND time > '%s 00:00:00' and time < '%s 23:59:59' ORDER BY time ASC", $at, $at));
 
         $datas = [];
-	$points = $result->getPoints();
+        $points = $result->getPoints();
         foreach ($points as $row) {
             $data = $row;
             $data['at'] = $data['time'];
@@ -87,10 +88,10 @@ class StorageInfluxDb implements StorageInterface
 
     private function getIndexOrZero($releve, $index)
     {
-	$value = $releve->valueAtIndex($index);
-	if(empty($value)) {
-	     return 0;
-	}
-	return $value;
+        $value = $releve->valueAtIndex($index);
+        if (empty($value)) {
+             return 0;
+        }
+        return $value;
     }
 }

@@ -57,8 +57,9 @@ class StorageChain implements StorageInterface
 
     /**
      * Return the array of configuration
+     * @return array
      */
-    public function configuration(): array
+    public function configuration()
     {
         return $this->configs;
     }
