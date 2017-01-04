@@ -82,6 +82,29 @@ class StorageChain implements StorageInterface
     }
 
     /**
+     * Return an array with all storage key
+     * @return array
+     */
+    public function storageLoaded()
+    {
+        return array_keys($this->storages);
+    }
+
+    /**
+     * Return the storage for the key
+     * @param string $key
+     * @return StorageInterface
+     * @throws StorageException if not found
+     */
+    public function storageAtKey($key)
+    {
+        if (!array_key_exists($key, $this->storages)) {
+            throw new StorageException(sprintf("No storage found for this key %s", $key), 500);
+        }
+        return $this->storages[$key];
+    }
+
+    /**
      * Init all configured storage
      */
     private function loadStorage()

@@ -28,7 +28,9 @@ class Releve implements ReleveInterface
     private $datas;
 
     /**
-     * @return array
+     * @param string the counter name
+     * @param array $datas
+     * @return self
      */
     public static function makeFromData($compteur, array $datas)
     {
@@ -36,6 +38,22 @@ class Releve implements ReleveInterface
         $releve->compteur = (string) $compteur;
         $releve->datas = $datas;
         $releve->recordedAt = new \DateTimeImmutable();
+        return $releve;
+    }
+
+    /**
+     * @param string the counter name
+     * @param array $datas
+     * @return self
+     */
+    public static function makeFromStorage($compteur, array $datas)
+    {
+        $releve = new self();
+        $releve->compteur = (string) $compteur;
+        $releve->recordedAt = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $datas['AT']);
+        unset($datas['AT']);
+        $releve->datas = $datas;
+
         return $releve;
     }
 

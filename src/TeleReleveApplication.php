@@ -15,6 +15,7 @@ use Mactronique\TeleReleve\Command\ReadCommand;
 use Mactronique\TeleReleve\Command\TestCommand;
 use Mactronique\TeleReleve\Command\CountReleveCommand;
 use Mactronique\TeleReleve\Command\DumpStorageCommand;
+use Mactronique\TeleReleve\Command\StorageCopyCommand;
 use Mactronique\TeleReleve\Configuration\MainConfiguration;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -53,11 +54,12 @@ class TeleReleveApplication extends Application
 
     public function __construct()
     {
-        parent::__construct('Mactronique EDF Telereleve Reader', '0.3');
+        parent::__construct('Mactronique EDF Telereleve Reader', '0.4');
         $this->add(new ReadCommand());
         $this->add(new TestCommand());
         $this->add(new CountReleveCommand());
         $this->add(new DumpStorageCommand());
+        $this->add(new StorageCopyCommand());
     }
 
     /**
