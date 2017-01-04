@@ -77,7 +77,7 @@ class StorageChain implements StorageInterface
     public function read($at)
     {
         reset($this->storage);
-        $storage = current($this->storage);
+        $storage = current($this->storages);
         return $storage->read($at);
     }
 
