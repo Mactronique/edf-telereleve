@@ -106,7 +106,7 @@ The default type-mime for email is 'text/plain'. If your custom template use the
             ];
             $output->writeln("Delta between tow days :");
             $table = new TableHelper();
-            $table->setHeaders(['Pricing', 'Yesterdays (Kwh)', 'Today (Kwh)', 'Delta (Kwh)']);
+            $table->setHeaders(['Pricing', 'Today (Kwh)', 'Yesterdays (Kwh)', 'Delta (Kwh)']);
             $table->setRows($deltas);
             $table->render($output);
         }
