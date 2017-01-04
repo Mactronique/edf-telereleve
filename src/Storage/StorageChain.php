@@ -51,7 +51,7 @@ class StorageChain implements StorageInterface
         foreach ($this->storages as $key => $storage) {
             try {
                 $storage->save($releve);
-            } catch (\Throwable $e) {
+            } catch (\Exception $e) {
                 $this->logger->error('ChainStorage : Error on save', ['storage'=>$key, 'releve'=>['at'=>$releve->at()->format('c'), 'datas'=>$releve->index()], 'exception'=>$e]);
                 if (!$this->configs['skip_on_storage_error']) {
                     throw new StorageException(sprintf('Error or exception on storage %s', $key), $e->getCode(), $e);
