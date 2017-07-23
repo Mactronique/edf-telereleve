@@ -90,7 +90,7 @@ class StorageInfluxDb implements StorageInterface
      */
     private function getDatabase()
     {
-        $client  = new \InfluxDB\Client($this->config['host'], $this->config['port']);
+        $client  = new \InfluxDB\Client($this->config['host'], $this->config['port'], isset($this->config['user'])? $this->config['user']:null, isset($this->config['user'])? $this->config['password']:null);
 
         return $client->selectDB($this->config['database']);
     }
