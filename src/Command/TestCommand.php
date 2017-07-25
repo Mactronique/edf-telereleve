@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
-use Symfony\Component\Console\Helper\TableHelper;
+use Symfony\Component\Console\Helper\Table;
 
 class TestCommand extends Command
 {
@@ -31,10 +31,10 @@ class TestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $releve = $this->getApplication()->compteur()->read();
-        $table = new TableHelper();
+        $table = new Table($output);
         $table->setHeaders(['Code', 'Description', 'Valeur', 'Unitée']);
         $table->setRows($releve->describe());
-        $table->render($output);
+        $table->render();
         //dump($releve->describe());
     }
 }
