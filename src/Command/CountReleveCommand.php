@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
-use Symfony\Component\Console\Helper\TableHelper;
+use Symfony\Component\Console\Helper\Table;
 
 /**
  * This command compute the daily consumption.
@@ -73,10 +73,10 @@ The default type-mime for email is 'text/plain'. If your custom template use the
             if ($nbYesterdays>0) {
                 $table_datasY = $this->computeDayConsumption($data);
 
-                $table = new TableHelper();
+                $table = new Table($output);
                 $table->setHeaders(['Pricing', 'Start index (Kwh)', 'Last index (Kwh)', 'Delta (Kwh)']);
                 $table->setRows($table_datasY[0]);
-                $table->render($output);
+                $table->render();
 
                 $output->writeln("Total : <info>".$table_datasY[1]."</info> Kwh");
             }
@@ -90,10 +90,10 @@ The default type-mime for email is 'text/plain'. If your custom template use the
         if ($nb>0) {
             $table_datas = $this->computeDayConsumption($data);
 
-            $table = new TableHelper();
+            $table = new Table($output);
             $table->setHeaders(['Pricing', 'Start index (Kwh)', 'Last index (Kwh)', 'Delta (Kwh)']);
             $table->setRows($table_datas[0]);
-            $table->render($output);
+            $table->render();
 
             $output->writeln("Total : <info>".$table_datas[1]."</info> Kwh");
         }
@@ -105,10 +105,10 @@ The default type-mime for email is 'text/plain'. If your custom template use the
                 ['Total day', sprintf('%10s', $table_datas[1]), sprintf('%10s', $table_datasY[1]), sprintf('%10s', number_format(($table_datas[2]+$table_datas[3] - ($table_datasY[2]+$table_datasY[3])), 3, ',', ' ')),],
             ];
             $output->writeln("Delta between tow days :");
-            $table = new TableHelper();
+            $table = new Table($output);
             $table->setHeaders(['Pricing', 'Today (Kwh)', 'Yesterdays (Kwh)', 'Delta (Kwh)']);
             $table->setRows($deltas);
-            $table->render($output);
+            $table->render();
         }
 
         if ($input->getOption('send-email')) {
