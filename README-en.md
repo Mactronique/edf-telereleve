@@ -81,9 +81,9 @@ storage:
     parameters: # This is the default value. This constains arbitrary array configuration key for the driver.
         path: datas.sqlite
 # Parameters array for the InfluxDB driver :
-		host: localhost
-		port: 8086
-		database: telereleve
+        host: localhost
+        port: 8086
+        database: telereleve
 # Parameters array for Chain storage driver :
     driver: Chain
     parameters:
@@ -103,16 +103,16 @@ enable_email: false # By default, the email sending is disabled.
 template: default.text.twig # The name file for default template for email body content.
 log_file: telereleve.log # The file log
 smtp:
-	server: 127.0.0.1
-	port: 25
-	security: null 
-	username: null
-	password: null
-	mime: text/plain
-	from: 
-		display_name: TeleReleve
-		email: me@localhost
-	to: 
-		display_name: Me
-		email: me@localhost
+    server: 127.0.0.1
+    port: 25
+    security: null 
+    username: null
+    password: null
+    mime: text/plain
+    from: 
+        display_name: TeleReleve
+        email: me@localhost
+    to: 
+        display_name: Me
+        email: me@localhost
 ```
