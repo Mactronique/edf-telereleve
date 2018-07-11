@@ -10,6 +10,7 @@
 
 namespace Mactronique\TeleReleve;
 
+use Mactronique\TeleReleve\Command\DumpConfigCommand;
 use Symfony\Component\Console\Application;
 use Mactronique\TeleReleve\Command\ReadCommand;
 use Mactronique\TeleReleve\Command\TestCommand;
@@ -54,12 +55,13 @@ class TeleReleveApplication extends Application
 
     public function __construct()
     {
-        parent::__construct('Mactronique EDF Telereleve Reader', '0.4');
+        parent::__construct('Mactronique EDF Telereleve Reader', '0.5.0');
         $this->add(new ReadCommand());
         $this->add(new TestCommand());
         $this->add(new CountReleveCommand());
         $this->add(new DumpStorageCommand());
         $this->add(new StorageCopyCommand());
+        $this->add(new DumpConfigCommand() );
     }
 
     /**
@@ -140,7 +142,7 @@ class TeleReleveApplication extends Application
     public function sendMessage($subject, $body)
     {
         if (!$this->config['enable_email']) {
-            throw new Exception("Email sending is not enabled", 1);
+            throw new \Exception("Email sending is not enabled", 1);
         }
 
         $loader = new \Twig_Loader_Filesystem(__DIR__.'/Templates');
@@ -150,20 +152,23 @@ class TeleReleveApplication extends Application
 
         $content = $twig->render($this->config['template'], $body);
 
-        $transport = Swift_SmtpTransport::newInstance($this->config['smtp']['server'], $this->config['smtp']['port'], $this->config['smtp']['security'])
+        $transport = (new Swift_SmtpTransport($this->config['smtp']['server'], $this->config['smtp']['port'], $this->config['smtp']['security']))
             ->setUsername($this->config['smtp']['username'])
             ->setPassword($this->config['smtp']['password']);
-        $mailer = Swift_Mailer::newInstance($transport);
-        $message = Swift_Message::newInstance($subject)
+        $mailer = new Swift_Mailer($transport);
+        $message = (new Swift_Message($subject))
           ->setFrom([$this->config['smtp']['from']['email']=> $this->config['smtp']['from']['display_name']])
           ->setTo([$this->config['smtp']['to']['email']=> $this->config['smtp']['to']['display_name']])
           ->setBody($content, $this->config['smtp']['mime'])
           ;
-        //dump($message->getBody());
-        //return;
 
         // Send the message
-        $result = $mailer->send($message);
+        $mailer->send($message);
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
     }
 
 

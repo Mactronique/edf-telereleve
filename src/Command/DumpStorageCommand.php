@@ -26,6 +26,12 @@ class DumpStorageCommand extends Command
     {
         $this
             ->setName('dump:storage')
+            ->setDescription('Dump the storage configuration.')
+            ->setHelp(<<<EOH
+This command dump the current storage configuration in YAML format.
+
+EOH
+            )
         ;
     }
 

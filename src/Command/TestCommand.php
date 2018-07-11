@@ -25,6 +25,18 @@ class TestCommand extends Command
     {
         $this
             ->setName('test')
+
+            ->setDescription('This command read the data from the serial port and display.')
+            ->setHelp(<<<EOH
+This command open and read serial data from the serial bus define into the configuration file.
+
+After read it, the data is computed depending to the power counter type defined into the configuration file.
+
+At end, the data is diplayed on the terminal.
+
+EOH
+            )
+
         ;
     }
 

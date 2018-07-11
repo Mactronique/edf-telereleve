@@ -24,6 +24,12 @@ class ReadCommand extends Command
     {
         $this
             ->setName('read')
+            ->setDescription('Read the power counter information and store it')
+            ->setHelp(<<<EOH
+Open the configured serial port and read the information. If the read is success, the readed data is savec into the configured storage.
+
+EOH
+            )
         ;
     }
 

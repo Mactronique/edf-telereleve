@@ -1,62 +1,91 @@
 # edf-telereleve
-Programme PHP pour lire le télérelevé
 
-# Install
+Programme PHP pour lire les informations client du compteur électrique.
 
-Clone the project or download the tarball.
+[English version](README-en.md)
 
-Open terminal and execute :
+# Pré-requis 
+
+* PHP 7.0 ou plus récent
+* [composer](https://getcomposer.org)
+* Le port série du compteur électrique connecté à votre ordinateur.
+
+# Connect the Serial Port
+
+Le compteur électrique dispose d'un port série pour le télé-releve client. 
+Vous pouvez connecter ce port série à votre ordinateur avec une petite carte.
+
+Ce schéma de la petite carte est décrit dans la [documentation ERDF](doc/ERDF-NOI-CPT_02F.pdf).
+
+Vous devez acheter les composants et la construire avant de poursuivre l'installation de ce programme.
+
+# Installation
+
+Cloner le projet ou télécharger l'archive.
+
+Une fois réalisé, ouvrir un terminal et se placer dans le dossier du projet, puis exécuter la commande suivante :
 
 ```bash
 $ php composer.phar install --no-dev -o
 ```
 
-If you want use InfluxDB storage, exetute this command
+Si vous compter stocker les données dans une base InfluxDB, exécuter la commande suivante dans le terminal :
 
 ```bash
-$ php composer.phar require influxdb/influxdb-php:^1.4
+$ php composer.phar require influxdb/influxdb-php
 ```
 
 # Configuration
 
-Make the configuration file into the destination folder.
+Ajouter le fichier de configuration vide en exécutant la commande suivante :
 
 ```bash
 $ touch config.yml
 ```
 
-## Set the serial device for your Electric Counter
+## Définir la configuration du port série
 
-The `compteur` key is the model of your electric counter. Only `CBEMM` and `CBETM` supported now.
+La clé `compteur` est le model du compteur électrique.
+Seulement les modèles `CBEMM` et `CBETM` sont actuellement supporté.
+Pour un particulier le modèle électronique blanc est le modèle `CBEMM`.
+Ce modèle est également compatible avec le compteur communiquant Linky.
 
-The `device` key is the path to the serial device socket.
+La clé `device` est le chemin vers le port série de votre machine sur lequel est connecté le compteur.
+Sur linux, la commande `ls /dev/tty*` permet de lister les ports séries disponible.
+
+Par exemple sur un Raspberry Pi 3 le port série du GPIO est `/dev/ttyS0`.
+
+Voici un exemple d'une configuration à placer dans le fichier `config.yml` à la racine du projet.
 
 ```yaml
 compteur: CBEMM
 device: /dev/ttyAMA0
 ```
 
-By default, the storage is SQLite into `data.sqlite` file.
+Par défaut les données sont stocké dans une base SQLite nommé `data.sqlite` et placé à la racine du projet.
 
-# Usage
+# Utilisation
 
-In the terminal :
+Dans le terminal exécuter la commande suivante :
 
 ```bash
 $ ./telereleve
 ```
 
-# Tests
+# Exécution des tests
 
-
-Open terminal and execute :
+Ouvrir un terminal et se placer à la racine du projet. Puis exécuter les commandes suivantes :
 
 ```bash
 $ php composer.phar install -o
 $ ./run-unit
 ```
 
-# Configuration definition
+La première install les outils de développement du projet et la seconde exécuter les tests.
+
+# Configuration complète
+
+Voci toutes les clés de configuration possible :
 
 ```yaml
 compteur: CBEMM #this value is by default

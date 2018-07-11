@@ -35,7 +35,7 @@ class CountReleveCommand extends Command
             ])
             ->setDescription('This command compute the daily consumption.')
             ->setHelp("This command can send email and compare the consumption for one days with before day.
-Exemple : telereleve count --date 2016-10-05 --yesterdays --send-email
+    Exemple : %command.full_name% --date 2016-10-05 --yesterdays --send-email
 
 Before try send a email, please, set the SMTP configuration into 'config.yml' file. This is the minimal confituration options :
 smtp:

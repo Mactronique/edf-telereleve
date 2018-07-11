@@ -32,7 +32,18 @@ class StorageCopyCommand extends Command
                 new InputArgument('count', InputArgument::OPTIONAL, 'Day number to be copied', 1),
 
             ])
-            ->setDescription('This command compute the daily consumption.')
+            ->setDescription('This command copy the storage data into another storage')
+            ->setHelp(<<<EOH
+This command copy the datas information saved into the storage "from" into the "to" storage.
+
+<comment>Work only if the storage configuration use the "Chain" storage with two storages.</comment>
+
+Exemple: %command.full_name% sqlite influx 2018-06-06 2
+
+This exemple copy the datas for two days (the June 6 2018 and the June 7 2018) from "sqlite" storage to the "influx" storage.
+
+EOH
+            )
         ;
     }
 
