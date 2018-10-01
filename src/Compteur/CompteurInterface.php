@@ -10,8 +10,9 @@ namespace Mactronique\TeleReleve\Compteur;
 
 interface CompteurInterface
 {
-    /*
+    /**
      * @return ReleveInterface
+     * @throws CompteurException
      */
     public function read();
 

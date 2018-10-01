@@ -9,11 +9,11 @@ class StorageInfluxDb implements StorageInterface
 {
     use LoggerAwareTrait;
 
+    /**
+     * @var array Configuration pour la connexion au serveur InfluxDB
+     */
     private $config;
 
-    /**
-     * @param string $path the path to the SQLITE File.
-     */
     public function __construct(array $config)
     {
         if (!array_key_exists('host', $config)) {
@@ -29,10 +29,12 @@ class StorageInfluxDb implements StorageInterface
         $this->logger = new \Psr\Log\NullLogger();
 
     }
+
     /**
      * Save the releve
      * @param ReleveInterface $releve
-     * @return mixed
+     * @return void
+     * @throws \InfluxDB\Exception
      */
     public function save(ReleveInterface $releve)
     {
@@ -68,11 +70,16 @@ class StorageInfluxDb implements StorageInterface
     /**
      * @param string $at
      * @return array
+     * @throws \Exception
      */
     public function read($at)
     {
         $database = $this->getDatabase();
-        $result = $database->query(sprintf("SELECT * FROM releve WHERE hchc > 0 AND hchp > 0 AND time > '%s 00:00:00' and time < '%s 23:59:59' ORDER BY time ASC", $at, $at));
+        $result = $database->query(sprintf(
+            "SELECT * FROM releve WHERE hchc > 0 AND hchp > 0 AND time > '%s 00:00:00' and time < '%s 23:59:59' ORDER BY time ASC",
+            $at,
+            $at
+        ));
 
         $datas = [];
         $points = $result->getPoints();
@@ -90,11 +97,21 @@ class StorageInfluxDb implements StorageInterface
      */
     private function getDatabase()
     {
-        $client  = new \InfluxDB\Client($this->config['host'], $this->config['port'], isset($this->config['user'])? $this->config['user']:null, isset($this->config['user'])? $this->config['password']:null);
+        $client  = new \InfluxDB\Client(
+            $this->config['host'],
+            $this->config['port'],
+            isset($this->config['user'])? $this->config['user']:null,
+            isset($this->config['user'])? $this->config['password']:null
+        );
 
         return $client->selectDB($this->config['database']);
     }
 
+    /**
+     * @param ReleveInterface $releve
+     * @param $index
+     * @return int
+     */
     private function getIndexOrZero($releve, $index)
     {
         $value = $releve->valueAtIndex($index);

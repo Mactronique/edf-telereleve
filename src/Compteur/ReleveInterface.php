@@ -10,13 +10,19 @@ namespace Mactronique\TeleReleve\Compteur;
 
 interface ReleveInterface
 {
-    /*
+    /**
      * @return \DateTimeImmutable
      */
     public function at();
 
-    /*
+    /**
      * @return array
      */
     public function index();
+
+    /**
+     * @param string $code
+     * @return mixed
+     */
+    public function valueAtIndex($code);
 }

@@ -20,6 +20,7 @@ class StorageChain implements StorageInterface
 
     /**
      * @param array $configs array of configuration for each storage component
+     * @throws \Exception
      */
     public function __construct(array $configs)
     {
@@ -44,7 +45,8 @@ class StorageChain implements StorageInterface
     /**
      * Save the releve
      * @param ReleveInterface $releve
-     * @return mixed
+     * @return void
+     * @throws StorageException
      */
     public function save(ReleveInterface $releve)
     {
@@ -106,16 +108,17 @@ class StorageChain implements StorageInterface
 
     /**
      * Init all configured storage
+     * @throws StorageException
      */
     private function loadStorage()
     {
         foreach ($this->configs['storages'] as $key => $config) {
             if (!isset($config['driver'])) {
-                throw new \Exception(sprintf("Unable to find the driver name on storage configuration %s", $key), 500);
+                throw new StorageException(sprintf("Unable to find the driver name on storage configuration %s", $key), 500);
             }
 
             if (!isset($config['parameters'])) {
-                throw new \Exception(sprintf("Unable to find the driver parameters on storage configuration %s", $key), 500);
+                throw new StorageException(sprintf("Unable to find the driver parameters on storage configuration %s", $key), 500);
             }
 
             $storageClass  = 'Mactronique\TeleReleve\Storage\Storage'.$config['driver'];

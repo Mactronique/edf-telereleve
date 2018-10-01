@@ -30,7 +30,7 @@ class CompteurCBEMM extends atoum
                 ->then
                 ->exception(function ($atoum) {
                     $atoum->testedInstance->read();
-                })->isInstanceOf('RuntimeException')
+                })->isInstanceOf('Mactronique\TeleReleve\Compteur\CompteurException')
             ->assert('tty found')
                 ->given($this->testedInstance = function () {
                     return \Mactronique\TeleReleve\Compteur\CompteurCBEMM::makeFromDevicePath(dirname(dirname(__DIR__)).'/fixtures/datas.bin');

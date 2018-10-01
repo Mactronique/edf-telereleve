@@ -10,14 +10,10 @@
 namespace Mactronique\TeleReleve\Command;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Exception\ProcessTimedOutException;
-use Symfony\Component\Console\Helper\Table;
 
 /**
  * This command compute the daily consumption.
@@ -54,6 +50,12 @@ The default type-mime for email is 'text/plain'. If your custom template use the
         ;
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     * @throws \Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $date = date('Y-m-d');
@@ -145,7 +147,6 @@ The default type-mime for email is 'text/plain'. If your custom template use the
     private function computeDayConsumption(array $data)
     {
         $table_data = [['', '', '', ''], ['', '', '', '']];
-        $conso_totale = "";
         $first = $data[0];
         $last = end($data);
         $hchc = ($last['hchc'] - $first['hchc'])/1000;

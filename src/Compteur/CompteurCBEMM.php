@@ -15,6 +15,8 @@ class CompteurCBEMM implements CompteurInterface
 
     /**
      * @param string $device
+     *
+     * @return CompteurInterface
      */
     public static function makeFromDevicePath($device)
     {
@@ -23,8 +25,10 @@ class CompteurCBEMM implements CompteurInterface
         return $compteur;
     }
 
-    /*
+    /**
      * @return ReleveInterface
+     *
+     * @throws CompteurException
      */
     public function read()
     {
@@ -34,6 +38,7 @@ class CompteurCBEMM implements CompteurInterface
 
     /**
      * Read the trame from device. Attempt 3 time read.
+     * @throws CompteurException
      */
     protected function readDevice()
     {
@@ -59,25 +64,27 @@ class CompteurCBEMM implements CompteurInterface
         }
         return $new;
     }
+
     /**
      * Read the devices for get one trame.
+     * @throws CompteurException
      */
     protected function readTrame()
     {
         if (!file_exists($this->dev)) {
-            throw new \RuntimeException("The device does not exist : ".$this->dev, 1);
+            throw new CompteurException("The device does not exist : ".$this->dev, 1);
         }
 
         $handle = fopen($this->dev, "r"); // ouverture du flux
         if (false === $handle) {
-            throw new \RuntimeException("The device does not ready for read : ".$this->dev, 1);
+            throw new CompteurException("The device does not ready for read : ".$this->dev, 1);
         }
 
-        while(fread($handle, 1) != chr(2)); // on attend la fin d'une trame pour commencer a avec la trame suivante
+        // on attend la fin d'une trame pour commencer a avec la trame suivante
+        while(fread($handle, 1) != chr(2));
 
         $char  = '';
         $trame = '';
-        $datas = '';
 
         while ($char != chr(2)) { // on lit tous les caracteres jusqu'a la fin de la trame
             $char = fread($handle, 1);

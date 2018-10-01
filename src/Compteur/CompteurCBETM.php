@@ -13,8 +13,10 @@ class CompteurCBETM extends CompteurCBEMM implements CompteurInterface
 {
     
 
-    /*
+    /**
      * @return ReleveInterface
+     *
+     * @throws CompteurException
      */
     public function read()
     {

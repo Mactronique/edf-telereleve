@@ -9,8 +9,8 @@
  */
 namespace Mactronique\TeleReleve\Configuration;
 
-use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class MainConfiguration implements ConfigurationInterface
 {

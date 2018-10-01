@@ -10,26 +10,24 @@
 
 namespace Mactronique\TeleReleve;
 
-use Mactronique\TeleReleve\Command\DumpConfigCommand;
-use Symfony\Component\Console\Application;
-use Mactronique\TeleReleve\Command\ReadCommand;
-use Mactronique\TeleReleve\Command\TestCommand;
 use Mactronique\TeleReleve\Command\CountReleveCommand;
+use Mactronique\TeleReleve\Command\DumpConfigCommand;
 use Mactronique\TeleReleve\Command\DumpStorageCommand;
+use Mactronique\TeleReleve\Command\ReadCommand;
 use Mactronique\TeleReleve\Command\StorageCopyCommand;
+use Mactronique\TeleReleve\Command\TestCommand;
 use Mactronique\TeleReleve\Configuration\MainConfiguration;
-use Symfony\Component\Config\Definition\Processor;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\ConsoleOutputInterface;
-use Symfony\Component\Yaml\Yaml;
-use Mactronique\TeleReleve\Storage\StorageInterface;
-use Swift_SmtpTransport;
 use Swift_Mailer;
 use Swift_Message;
+use Swift_SmtpTransport;
+use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Yaml\Yaml;
 
 class TeleReleveApplication extends Application
 {

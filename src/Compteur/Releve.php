@@ -31,6 +31,7 @@ class Releve implements ReleveInterface
      * @param string the counter name
      * @param array $datas
      * @return self
+     * @throws \Exception
      */
     public static function makeFromData($compteur, array $datas)
     {
@@ -64,7 +65,7 @@ class Releve implements ReleveInterface
     {
     }
 
-    /*
+    /**
      * @return \DateTimeImmutable
      */
     public function at()
@@ -72,7 +73,7 @@ class Releve implements ReleveInterface
         return $this->recordedAt;
     }
 
-    /*
+    /**
      * @return array
      */
     public function index()
@@ -84,6 +85,7 @@ class Releve implements ReleveInterface
      * Retourn the value clean.
      * @param string $code
      * @return mixed
+     * @throws \ReflectionException
      */
     public function valueAtIndex($code)
     {
@@ -96,6 +98,7 @@ class Releve implements ReleveInterface
     /**
      * Return array of array with Code, Label, Value, Unit
      * @return array
+     * @throws \ReflectionException
      */
     public function describe()
     {
@@ -123,6 +126,7 @@ class Releve implements ReleveInterface
      * @param string $code
      * @param string $value
      * @return string
+     * @throws \ReflectionException
      */
     private function cleanAndConvert($code, $value)
     {
