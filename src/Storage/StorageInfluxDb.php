@@ -50,10 +50,10 @@ class StorageInfluxDb implements StorageInterface
                 'ptec' => $this->getIndexOrZero($releve, 'PTEC'),
             ],
             [
-                'iinst' => floatval($this->getIndexOrZero($releve, 'IINST')),
-                'hchc' => floatval($this->getIndexOrZero($releve, 'HCHC')),
-                'hchp' => floatval($this->getIndexOrZero($releve, 'HCHP')),
-                'base' => floatval($this->getIndexOrZero($releve, 'BASE')),
+                'iinst' => intval($this->getIndexOrZero($releve, 'IINST')),
+                'hchc' => intval($this->getIndexOrZero($releve, 'HCHC')),
+                'hchp' => intval($this->getIndexOrZero($releve, 'HCHP')),
+                'base' => intval($this->getIndexOrZero($releve, 'BASE')),
             ],
             $releve->at()->getTimestamp()
         );
