@@ -38,6 +38,11 @@ class StorageInfluxDb implements StorageInterface
      */
     public function save(ReleveInterface $releve)
     {
+
+	if ($this->getIndexOrZero($releve, 'PTEC') === 0) {
+		return;
+	}
+
         $point = new \InfluxDB\Point(
             'releve',
             null,
@@ -45,13 +50,14 @@ class StorageInfluxDb implements StorageInterface
                 'ptec' => $this->getIndexOrZero($releve, 'PTEC'),
             ],
             [
-                'iinst' => $this->getIndexOrZero($releve, 'IINST'),
-                'hchc' => $this->getIndexOrZero($releve, 'HCHC'),
-                'hchp' => $this->getIndexOrZero($releve, 'HCHP'),
-                'base' => $this->getIndexOrZero($releve, 'BASE'),
+                'iinst' => floatval($this->getIndexOrZero($releve, 'IINST')),
+                'hchc' => floatval($this->getIndexOrZero($releve, 'HCHC')),
+                'hchp' => floatval($this->getIndexOrZero($releve, 'HCHP')),
+                'base' => floatval($this->getIndexOrZero($releve, 'BASE')),
             ],
             $releve->at()->getTimestamp()
         );
+//        dump($point);
         $db = $this->getDatabase();
 
         $db->writePoints([$point], \InfluxDB\Database::PRECISION_SECONDS);
