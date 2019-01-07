@@ -3,7 +3,13 @@ php:
   - '7.2'
   - '7.3'
 
+addons:
+  sonarcloud:
+    organization: "mactronique"
+    
 install:
   - composer install
   
-script: vendor/bin/atoum -d tests/Units -bf tests/bootstrap.atoum.php
+script:
+  - vendor/bin/atoum -d tests/Units -bf tests/bootstrap.atoum.php
+  - sonar-scanner
