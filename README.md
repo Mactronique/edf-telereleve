@@ -2,6 +2,8 @@
 
 Programme PHP pour lire les informations client du compteur électrique.
 
+[![Build Status](https://travis-ci.org/Mactronique/edf-telereleve.svg?branch=master)](https://travis-ci.org/Mactronique/edf-telereleve)
+
 [English version](README-en.md)
 
 # Pré-requis 
