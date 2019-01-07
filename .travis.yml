@@ -12,4 +12,4 @@ install:
   
 script:
   - vendor/bin/atoum -d tests/Units -bf tests/bootstrap.atoum.php
-  - sonar-scanner -Dsonar.projectKey=Mactronique_edf-telereleve -Dsonar.organization=mactronique -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.tests=tests
+  - sonar-scanner -Dsonar.projectKey=Mactronique_edf-telereleve -Dsonar.organization=mactronique -Dsonar.sources=./src,./telereleve -Dsonar.host.url=https://sonarcloud.io -Dsonar.test.inclusions=tests/**
