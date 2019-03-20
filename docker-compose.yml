@@ -1,0 +1,14 @@
+version: '2'
+services:
+
+  toolphp:
+    image: macintoshplus/php:php73
+    volumes:
+      - ./:/sources
+    dns:
+      - 8.8.8.8
+    environment:
+      SYMFONY_ENV: 'dev'
+      PHP_ENV: 'DEV'
+      #XDEBUG_CONFIG: "remote_host=172.18.0.1 remote_connect_back=1 profiler_enable=1 remote_autostart=0 remote_enable=1"
+      #PHP_IDE_CONFIG: "serverName=local"
