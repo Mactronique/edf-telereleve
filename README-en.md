@@ -2,10 +2,17 @@
 
 PHP program for read the power counter customer information.
 
+
+# Change in version 1.0
+
+* Upgrade to Symfony 5.4 components
+* Drop the InfluxDB support
+
 # Prerequisites
 
-* PHP 7.0+
-* [composer](https://getcomposer.org)
+* PHP 7.8+
+* PHP SQLite extension
+* [composer 2](https://getcomposer.org)
 * The serial port of the power counter connected at your computer.
 
 # Connect the Serial Port
@@ -26,12 +33,6 @@ Open terminal and execute :
 $ php composer.phar install --no-dev -o
 ```
 
-If you want use InfluxDB storage, exetute this command
-
-```bash
-$ php composer.phar require influxdb/influxdb-php:^1.4
-```
-
 # Configuration
 
 Make the configuration file into the destination folder.
@@ -43,6 +44,8 @@ $ touch config.yml
 ## Set the serial device for your Power Counter
 
 The `compteur` key is the model of your electric counter. Only `CBEMM` and `CBETM` supported now.
+
+> For `linky` counter, use `CBEMM` and ask the legacy mode configuration to ERDF. 
 
 The `device` key is the path to the serial device socket.
 
@@ -80,10 +83,6 @@ storage:
     driver: Sqlite # This is the default value. Another storage supported is 'InfluxDb'.
     parameters: # This is the default value. This constains arbitrary array configuration key for the driver.
         path: datas.sqlite
-# Parameters array for the InfluxDB driver :
-        host: localhost
-        port: 8086
-        database: telereleve
 # Parameters array for Chain storage driver :
     driver: Chain
     parameters:
@@ -92,12 +91,6 @@ storage:
                 driver: Sqlite
                 parameters:
                     path: datas.sqlite
-            influx:
-                driver: InfluxDb
-                parameters:
-                    host: localhost
-                    port: 8086
-                    database: telereleve
         skip_on_storage_error: false # if true, no error stop the save process. If one storage is on error, the error is ignored.
 enable_email: false # By default, the email sending is disabled.
 template: default.text.twig # The name file for default template for email body content.

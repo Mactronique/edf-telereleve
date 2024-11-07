@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mactronique\TeleReleve\Datas;
 
 class DescriptionCBETM
 {
-
     /**
-     * Libellé de la valeur
+     * Libellé de la valeur.
+     *
      * @return string
      */
     public static function _label($value)
@@ -46,9 +48,9 @@ class DescriptionCBETM
         return $values[$value];
     }
 
-
     /**
-     * Unité de la valeur
+     * Unité de la valeur.
+     *
      * @return string
      */
     public static function _unite($value)

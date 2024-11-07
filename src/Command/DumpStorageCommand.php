@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of Mactronique EDF TeleReleve package.
  *
- * @author Jean-Baptiste Nahan <jbnahan@gmail.com>
- * @copyright 2016 - Jean-Baptiste Nahan
+ * @author Jean-Baptiste Nahan <814683+macintoshplus@users.noreply.github.com>
+ * @copyright 2016,2024 - Jean-Baptiste Nahan
  * @license MIT
  */
+
 namespace Mactronique\TeleReleve\Command;
 
 use Symfony\Component\Console\Command\Command;
@@ -21,7 +24,8 @@ class DumpStorageCommand extends Command
         $this
             ->setName('dump:storage')
             ->setDescription('Dump the storage configuration.')
-            ->setHelp(<<<EOH
+            ->setHelp(
+                <<<EOH
 This command dump the current storage configuration in YAML format.
 
 EOH
@@ -29,14 +33,16 @@ EOH
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $storage = $this->getApplication()->storage();
-        $mainStorageClassName = get_class($storage);
-        $output->writeln("The main class for storage is : <info>".$mainStorageClassName."</info>");
-        
+        $mainStorageClassName = $storage::class;
+        $output->writeln('The main class for storage is : <info>'.$mainStorageClassName.'</info>');
+
         $yaml = Yaml::dump($storage->configuration(), 10, 4);
-        $output->writeln("The configuration for storage is :");
+        $output->writeln('The configuration for storage is :');
         $output->writeln($yaml);
+
+        return self::SUCCESS;
     }
 }

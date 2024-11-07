@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of Mactronique EDF TeleReleve package.
  *
@@ -9,9 +11,7 @@
 
 namespace Mactronique\TeleReleve\Tests\Units\Compteur;
 
-use atoum;
-
-class CompteurCBEMM extends atoum
+class CompteurCBEMM extends \atoum
 {
     public function testinit()
     {
@@ -33,7 +33,7 @@ class CompteurCBEMM extends atoum
                 })->isInstanceOf('Mactronique\TeleReleve\Compteur\CompteurException')
             ->assert('tty found')
                 ->given($this->testedInstance = function () {
-                    return \Mactronique\TeleReleve\Compteur\CompteurCBEMM::makeFromDevicePath(dirname(dirname(__DIR__)).'/fixtures/datas.bin');
+                    return \Mactronique\TeleReleve\Compteur\CompteurCBEMM::makeFromDevicePath(\dirname(__DIR__, 2).'/fixtures/datas.bin');
                 })
                 ->and($this->function->file_exists = true)
                 /*->and($this->function->fopen = function($path, $mode){
@@ -49,6 +49,5 @@ class CompteurCBEMM extends atoum
                 ->object($releve)->isInstanceOf('Mactronique\TeleReleve\Compteur\Releve')
 
         ;
-
     }
 }

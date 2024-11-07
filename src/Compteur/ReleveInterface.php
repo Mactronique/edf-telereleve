@@ -1,11 +1,14 @@
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of Mactronique EDF TeleReleve package.
  *
- * @author Jean-Baptiste Nahan <jbnahan@gmail.com>
- * @copyright 2016 - Jean-Baptiste Nahan
+ * @author Jean-Baptiste Nahan <814683+macintoshplus@users.noreply.github.com>
+ * @copyright 2016,2024 - Jean-Baptiste Nahan
  * @license MIT
  */
+
 namespace Mactronique\TeleReleve\Compteur;
 
 interface ReleveInterface
@@ -22,7 +25,6 @@ interface ReleveInterface
 
     /**
      * @param string $code
-     * @return mixed
      */
     public function valueAtIndex($code);
 }

@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Mactronique\TeleReleve\Datas;
 
 class ERDF
 {
     /**
-     * Periode Tarifaire en cours
+     * Periode Tarifaire en cours.
      */
     public static function ptec($value)
     {
@@ -27,7 +29,7 @@ class ERDF
     }
 
     /**
-     * Couleur du lendemain
+     * Couleur du lendemain.
      */
     public static function demain($value)
     {
@@ -41,11 +43,11 @@ class ERDF
     }
 
     /**
-     * Option du tarif
+     * Option du tarif.
      */
     public static function optarif($value)
     {
-        if (strpos($value, 'BBR')===0) {
+        if (str_starts_with($value, 'BBR')) {
             return 'Option Tempo';
         }
 

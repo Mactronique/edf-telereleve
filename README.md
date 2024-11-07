@@ -6,10 +6,16 @@ Programme PHP pour lire les informations client du compteur électrique.
 
 [English version](README-en.md)
 
-# Pré-requis 
+# Changement dans la version 1.0
 
-* PHP 7.0 ou plus récent
-* [composer](https://getcomposer.org)
+* Mise à jour vers les composants Symfony 5.4
+* Retrait du support d'InfluxDB
+
+# Pré-requis
+
+* PHP 7.4 ou plus récent.
+* L'extension SQLite pour PHP.
+* [composer 2](https://getcomposer.org)
 * Le port série du compteur électrique connecté à votre ordinateur.
 
 # Connect the Serial Port
@@ -31,12 +37,6 @@ Une fois réalisé, ouvrir un terminal et se placer dans le dossier du projet, p
 $ php composer.phar install --no-dev -o
 ```
 
-Si vous compter stocker les données dans une base InfluxDB, exécuter la commande suivante dans le terminal :
-
-```bash
-$ php composer.phar require influxdb/influxdb-php
-```
-
 # Configuration
 
 Ajouter le fichier de configuration vide en exécutant la commande suivante :
@@ -50,10 +50,10 @@ $ touch config.yml
 La clé `compteur` est le model du compteur électrique.
 Seulement les modèles `CBEMM` et `CBETM` sont actuellement supporté.
 Pour un particulier le modèle électronique blanc est le modèle `CBEMM`.
-Ce modèle est également compatible avec le compteur communiquant Linky.
+Ce modèle est également compatible avec le compteur communicant Linky en mode `legacy`.
 
 La clé `device` est le chemin vers le port série de votre machine sur lequel est connecté le compteur.
-Sur linux, la commande `ls /dev/tty*` permet de lister les ports séries disponible.
+Sur linux, la commande `ls /dev/tty*` permet de lister les ports séries disponibles.
 
 Par exemple sur un Raspberry Pi 3 le port série du GPIO est `/dev/ttyS0`.
 
@@ -96,10 +96,6 @@ storage:
     driver: Sqlite # This is the default value. Another storage supported is 'InfluxDb'.
     parameters: # This is the default value. This constains arbitrary array configuration key for the driver.
         path: datas.sqlite
-# Parameters array for the InfluxDB driver :
-        host: localhost
-        port: 8086
-        database: telereleve
 # Parameters array for Chain storage driver :
     driver: Chain
     parameters:
@@ -108,12 +104,6 @@ storage:
                 driver: Sqlite
                 parameters:
                     path: datas.sqlite
-            influx:
-                driver: InfluxDb
-                parameters:
-                    host: localhost
-                    port: 8086
-                    database: telereleve
         skip_on_storage_error: false # if true, no error stop the save process. If one storage is on error, the error is ignored.
 enable_email: false # By default, the email sending is disabled.
 template: default.text.twig # The name file for default template for email body content.

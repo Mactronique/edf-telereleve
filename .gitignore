@@ -1,3 +1,6 @@
 vendor
 config.yml
 composer.phar
+
+/.scannerwork
+/.php-cs-fixer.cache

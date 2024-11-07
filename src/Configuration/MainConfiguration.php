@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of Mactronique EDF TeleReleve package.
  *
- * @author Jean-Baptiste Nahan <jbnahan@gmail.com>
- * @copyright 2016 - Jean-Baptiste Nahan
+ * @author Jean-Baptiste Nahan <814683+macintoshplus@users.noreply.github.com>
+ * @copyright 2016,2024 - Jean-Baptiste Nahan
  * @license MIT
  */
+
 namespace Mactronique\TeleReleve\Configuration;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -16,8 +19,8 @@ class MainConfiguration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('main');
+        $treeBuilder = new TreeBuilder('main');
+        $rootNode = $treeBuilder->getRootNode();
 
         // ... add node definitions to the root of the tree
         $rootNode
@@ -35,7 +38,7 @@ class MainConfiguration implements ConfigurationInterface
                             ->defaultValue('Sqlite')
                         ->end()
                         ->arrayNode('parameters')
-                            ->defaultValue(['path'=>'datas.sqlite'])
+                            ->defaultValue(['path' => 'datas.sqlite'])
                             ->prototype('variable')->end()
                         ->end()
                     ->end()
@@ -57,6 +60,9 @@ class MainConfiguration implements ConfigurationInterface
                         ->end()
                         ->integerNode('port')
                             ->defaultValue(25)
+                        ->end()
+                        ->booleanNode('tls')
+                            ->defaultFalse()
                         ->end()
                         ->scalarNode('security')
                             ->defaultValue(null)

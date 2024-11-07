@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This file is part of Mactronique EDF TeleReleve package.
  *
- * @author Jean-Baptiste Nahan <jbnahan@gmail.com>
- * @copyright 2016 - Jean-Baptiste Nahan
+ * @author Jean-Baptiste Nahan <814683+macintoshplus@users.noreply.github.com>
+ * @copyright 2016,2024 - Jean-Baptiste Nahan
  * @license MIT
  */
 
@@ -16,10 +18,12 @@ use Mactronique\TeleReleve\Command\DumpStorageCommand;
 use Mactronique\TeleReleve\Command\ReadCommand;
 use Mactronique\TeleReleve\Command\StorageCopyCommand;
 use Mactronique\TeleReleve\Command\TestCommand;
+use Mactronique\TeleReleve\Compteur\CompteurInterface;
 use Mactronique\TeleReleve\Configuration\MainConfiguration;
-use Swift_Mailer;
-use Swift_Message;
-use Swift_SmtpTransport;
+use Mactronique\TeleReleve\Storage\StorageInterface;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -27,29 +31,27 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
+use Symfony\Component\Mailer\Transport\Smtp\SmtpTransport;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Yaml\Yaml;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 class TeleReleveApplication extends Application
 {
     /**
-     * @var array
+     * @var array<int|string, mixed>
      */
-    private $config;
+    private array $config;
 
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /**
-     * @var \Mactronique\TeleReleve\Compteur\CompteurInterface
-     */
-    private $compteur;
+    private CompteurInterface $compteur;
 
-    /**
-     * @var \Mactronique\TeleReleve\Storage\StorageInterface
-     */
-    private $storage;
+    private StorageInterface $storage;
 
     public function __construct()
     {
@@ -59,26 +61,21 @@ class TeleReleveApplication extends Application
         $this->add(new CountReleveCommand());
         $this->add(new DumpStorageCommand());
         $this->add(new StorageCopyCommand());
-        $this->add(new DumpConfigCommand() );
+        $this->add(new DumpConfigCommand());
     }
 
     /**
      * Runs the current application.
      *
-     * @param InputInterface  $input  An Input instance
-     * @param OutputInterface $output An Output instance
-     *
-     * @return int 0 if everything went fine, or an error code
-     *
      * @throws \Exception When doRun returns Exception
      */
-    public function run(InputInterface $input = null, OutputInterface $output = null)
+    public function run(?InputInterface $input = null, ?OutputInterface $output = null): int
     {
-        if (null === $input) {
+        if ($input === null) {
             $input = new ArgvInput();
         }
 
-        if (null === $output) {
+        if ($output === null) {
             $output = new ConsoleOutput();
         }
 
@@ -88,15 +85,15 @@ class TeleReleveApplication extends Application
             $this->boot($input);
         } catch (\Exception $e) {
             if ($output instanceof ConsoleOutputInterface) {
-                $this->renderException($e, $output->getErrorOutput());
+                $this->renderThrowable($e, $output->getErrorOutput());
             } else {
-                $this->renderException($e, $output);
+                $this->renderThrowable($e, $output);
             }
 
             $exitCode = $e->getCode();
             if (is_numeric($exitCode)) {
                 $exitCode = (int) $exitCode;
-                if (0 === $exitCode) {
+                if ($exitCode === 0) {
                     $exitCode = 1;
                 }
             } else {
@@ -108,97 +105,98 @@ class TeleReleveApplication extends Application
         return parent::run($input, $output);
     }
 
-    /**
-     * @return \Psr\Log\LoggerInterface
-     */
-    public function logger()
+    public function logger(): LoggerInterface
     {
         return $this->logger;
     }
 
-    /**
-     * @return \Mactronique\TeleReleve\Compteur\CompteurInterface
-     */
-    public function compteur()
+    public function compteur(): CompteurInterface
     {
         return $this->compteur;
     }
 
-    /**
-     * Gets the value of storage.
-     *
-     * @return \Mactronique\TeleReleve\Storage\StorageInterface
-     */
-    public function storage()
+    public function storage(): StorageInterface
     {
         return $this->storage;
     }
 
     /**
-     * Sent email
+     * Sent email.
      */
-    public function sendMessage($subject, $body)
+    public function sendMessage(string $subject, array $body): void
     {
         if (!$this->config['enable_email']) {
-            throw new \Exception("Email sending is not enabled", 1);
+            throw new \Exception('Email sending is not enabled', 1);
         }
 
-        $loader = new \Twig_Loader_Filesystem(__DIR__.'/Templates');
-        $twig = new \Twig_Environment($loader, array(
-            //'cache' => '/path/to/compilation_cache',
-        ));
+        $loader = new FilesystemLoader(__DIR__.'/Templates');
+        $twig = new Environment($loader, [
+            // 'cache' => '/path/to/compilation_cache',
+        ]);
 
         $content = $twig->render($this->config['template'], $body);
 
-        $transport = (new Swift_SmtpTransport($this->config['smtp']['server'], $this->config['smtp']['port'], $this->config['smtp']['security']))
-            ->setUsername($this->config['smtp']['username'])
-            ->setPassword($this->config['smtp']['password']);
-        $mailer = new Swift_Mailer($transport);
-        $message = (new Swift_Message($subject))
-          ->setFrom([$this->config['smtp']['from']['email']=> $this->config['smtp']['from']['display_name']])
-          ->setTo([$this->config['smtp']['to']['email']=> $this->config['smtp']['to']['display_name']])
-          ->setBody($content, $this->config['smtp']['mime'])
-          ;
+        $transport = new SmtpTransport();
 
-        // Send the message
+        if (($this->config['smtp']['username'] ?? null) !== null) {
+            $transport = new EsmtpTransport();
+            $transport->setUsername($this->config['smtp']['username']);
+            $transport->setPassword($this->config['smtp']['password']);
+        }
+
+        $stream = $transport->getStream();
+        $stream->setHost($this->config['smtp']['server']);
+        $stream->setPort($this->config['smtp']['port']);
+        if ($this->config['smtp']['tls'] === false) {
+            $stream->disableTls();
+        }
+
+        $mailer = new Mailer($transport);
+
+        $message = new Email();
+        $message->subject($subject);
+        $type = explode('/', $this->config['smtp']['mime']);
+
+        $subtype = $type[1] ?? 'plain';
+        if ($subtype === 'plain') {
+            $message->text($content);
+        }
+        if ($subtype === 'html') {
+            $message->html($content);
+        }
+
+        $message->addFrom(
+            new Address(
+                $this->config['smtp']['from']['email'],
+                $this->config['smtp']['from']['display_name']
+            )
+        );
+        $message->addTo(new Address($this->config['smtp']['to']['email'], $this->config['smtp']['to']['display_name']));
+
         $mailer->send($message);
     }
 
-    public function getConfig()
+    public function getConfig(): array
     {
         return $this->config;
     }
 
-
-    /**
-     * Gets the default input definition.
-     *
-     * @return InputDefinition An InputDefinition instance
-     */
-    protected function getDefaultInputDefinition()
-    {
-        $input = parent::getDefaultInputDefinition();
-        //$input->addOption(new InputOption('--no-config', null, InputOption::VALUE_NONE, 'Do not load the configuration'));
-
-        return $input;
-    }
-
-    /**
+    /*
      * This function run the first level booting.
      */
-    private function boot(InputInterface $input)
+    private function boot(InputInterface $input): void
     {
-        $configFile = dirname(__DIR__).'/config.yml';
+        $configFile = \dirname(__DIR__).'/config.yml';
         $this->loadConfigurationFile($configFile);
         $this->loadLogger();
         $this->loadCompteur();
         $this->loadStorage();
     }
 
-    /**
+    /*
      * Load the configuration file.
      */
-    private function loadConfigurationFile($configFile)
+    private function loadConfigurationFile($configFile): void
     {
         if (!file_exists($configFile)) {
             throw new \Exception('The configuration file ('.$configFile.') is not found ! ', 123);
@@ -212,28 +210,28 @@ class TeleReleveApplication extends Application
         $this->config = $processor->processConfiguration($configuration, $configs);
     }
 
-    private function loadLogger()
+    private function loadLogger(): void
     {
         $file = $this->config['log_file'];
 
-        $this->logger = new \Monolog\Logger('main');
-        $this->logger->pushHandler(new \Monolog\Handler\StreamHandler($file));
+        $this->logger = new Logger('main');
+        $this->logger->pushHandler(new StreamHandler($file));
     }
 
-    private function loadCompteur()
+    private function loadCompteur(): void
     {
-        $compteurClass  = 'Mactronique\TeleReleve\Compteur\Compteur'.$this->config['compteur'];
+        $compteurClass = 'Mactronique\TeleReleve\Compteur\Compteur'.$this->config['compteur'];
         if (!class_exists($compteurClass)) {
-            throw new \LogicException("The class does not exists : ".$compteurClass, 1);
+            throw new \LogicException('The class does not exists : '.$compteurClass, 1);
         }
         $this->compteur = $compteurClass::makeFromDevicePath($this->config['device']);
     }
 
-    private function loadStorage()
+    private function loadStorage(): void
     {
-        $storageClass  = 'Mactronique\TeleReleve\Storage\Storage'.$this->config['storage']['driver'];
+        $storageClass = 'Mactronique\TeleReleve\Storage\Storage'.$this->config['storage']['driver'];
         if (!class_exists($storageClass)) {
-            throw new \LogicException("The class does not exists : ".$storageClass, 1);
+            throw new \LogicException('The class does not exists : '.$storageClass, 1);
         }
 
         $this->storage = new $storageClass($this->config['storage']['parameters']);

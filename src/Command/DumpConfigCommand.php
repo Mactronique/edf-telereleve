@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * @copyright Macintoshplus (c) 2018
  * Added by : Macintoshplus at 11/07/18 21:18
@@ -19,7 +21,8 @@ class DumpConfigCommand extends Command
             ->setName('dump:config')
 
             ->setDescription('This display the current configuration.')
-            ->setHelp(<<<EOH
+            ->setHelp(
+                <<<EOH
 Display the current configuration in Yaml format with default values and values defined into the 'config.yml' configuration file.
 
 EOH
@@ -28,9 +31,11 @@ EOH
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('<info>The current configuration:</info>');
         $output->writeln(Yaml::dump($this->getApplication()->getConfig(), 10));
+
+        return self::SUCCESS;
     }
 }
